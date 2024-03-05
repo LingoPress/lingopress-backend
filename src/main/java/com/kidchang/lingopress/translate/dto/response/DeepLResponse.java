@@ -13,7 +13,7 @@ public class DeepLResponse {
     @NoArgsConstructor
     public static class Translation {
 
-        private String detectedSourceLanguage;
+        private String detected_source_language;
         private String text;
     }
 }
