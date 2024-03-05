@@ -5,11 +5,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "lingopress_user")
+@Getter
+@AllArgsConstructor
 public class User extends BaseTimeEntity {
 
     @Id
@@ -23,4 +28,13 @@ public class User extends BaseTimeEntity {
     private String nickname;
     private String password;
     private String role;
+
+    @Builder
+    public User(String username, String nickname, String password, String role) {
+        this.username = username;
+        this.nickname = nickname;
+        this.password = password;
+        this.role = role;
+    }
+
 }
