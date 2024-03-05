@@ -20,6 +20,14 @@ public enum Code {
     QUERY_PARAMETER_REQUIRED(HttpStatus.BAD_REQUEST, "쿼리 파라미터가 필요한 API입니다."),
     INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "입력값이 올바르지 않습니다."),
 
+    // Token
+    NOT_SIGNATURE_TOKEN(HttpStatus.BAD_REQUEST, "시그니처 검증에 실패한 JWT 토큰입니다"),
+    MALFORMED_TOKEN(HttpStatus.BAD_REQUEST, "손상된 JWT 토큰입니다"),
+    NOT_ACCESS_TOKEN(HttpStatus.BAD_REQUEST, "엑세스 토큰이 아닙니다"),
+    EXPIRED_TOKEN(HttpStatus.BAD_REQUEST, "만료된 JWT 토큰입니다"),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증되지 않은 사용자입니다."),
+
+
     TRANSLATION_ERROR(HttpStatus.BAD_REQUEST, "번역 에러가 발생하였습니다."),
 
     ;
