@@ -3,7 +3,6 @@ package com.kidchang.lingopress._base.response;
 import com.kidchang.lingopress._base.constant.Code;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 @Getter
 @RequiredArgsConstructor
