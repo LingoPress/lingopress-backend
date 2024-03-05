@@ -1,4 +1,4 @@
-package com.kidchang.lingopress.exception;
+package com.kidchang.lingopress._base.exception;
 
 import com.kidchang.lingopress._base.constant.Code;
 import com.kidchang.lingopress._base.response.ErrorResponseDto;
@@ -16,6 +16,13 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
+    // Code 예외 처리
+    @ExceptionHandler(GeneralException.class)
+    protected ResponseEntity<Object> handleBusinessException(GeneralException e) {
+        log.error(e.toString(), e);
+        return handleExceptionInternal(e.getErrorCode());
+    }
 
 
     // 지원하지 않는 HTTP method를 호출할 경우
