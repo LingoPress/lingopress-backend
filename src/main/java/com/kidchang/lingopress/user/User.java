@@ -1,27 +1,31 @@
 package com.kidchang.lingopress.user;
 
 import com.kidchang.lingopress._base.entity.BaseTimeEntity;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "lingopress_user")
-@Getter
+@Data
 @AllArgsConstructor
 public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
 
-    // googleId
+    // provider + id
+    @Column(unique = true)
+    @Schema(description = "provider + id로 구성된 유저 아이디", example = "g_1234567890")
     private String username;
 
     // 이름

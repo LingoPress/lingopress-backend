@@ -54,9 +54,17 @@ public class GlobalExceptionHandler {
             e.getBindingResult().getFieldErrors().get(0).getDefaultMessage());
     }
 
+    // entity 관련 예외 처리
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    protected ResponseEntity<Object> handleDataIntegrityViolationExceptionException(
+        DataIntegrityViolationException e) {
+        log.error(e.toString(), e);
+        return handleExceptionInternal(Code.INVALID_INPUT_VALUE, e.getLocalizedMessage());
+    }
+
+
     // 그 밖에 발생하는 모든 예외 처리
-    @ExceptionHandler(value = {Exception.class, RuntimeException.class, SQLException.class,
-        DataIntegrityViolationException.class})
+    @ExceptionHandler(value = {Exception.class, RuntimeException.class, SQLException.class})
     protected ResponseEntity<Object> handleException(Exception e) {
         log.error(e.toString(), e);
 
