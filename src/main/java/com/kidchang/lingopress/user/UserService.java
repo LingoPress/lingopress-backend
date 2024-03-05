@@ -1,6 +1,6 @@
 package com.kidchang.lingopress.user;
 
-import com.kidchang.lingopress._base.jwt.JwtResponse;
+import com.kidchang.lingopress.jwt.dto.response.JwtResponse;
 import com.kidchang.lingopress.user.dto.request.SignupRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,7 +1,8 @@
-package com.kidchang.lingopress._base.jwt;
+package com.kidchang.lingopress.jwt;
 
 import com.kidchang.lingopress._base.constant.Code;
 import com.kidchang.lingopress._base.exception.GeneralException;
+import com.kidchang.lingopress.jwt.dto.response.JwtResponse;
 import com.kidchang.lingopress.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
