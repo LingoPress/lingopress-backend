@@ -116,6 +116,7 @@ public class JwtTokenUtil {
         } catch (MalformedJwtException e) {
             throw new JwtException(Code.MALFORMED_TOKEN.getMessage());
         } catch (JwtException e) {
+            log.info("JwtException: {}", e.getMessage());
             throw new JwtException(e.getMessage());
         }
     }
