@@ -39,6 +39,9 @@ public enum Code {
 
     TRANSLATION_ERROR(HttpStatus.BAD_REQUEST, "번역 에러가 발생하였습니다."),
 
+    // Press
+    PRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 뉴스를 찾을 수 없습니다."),
+
     ;
 
     private final HttpStatus httpStatus;
