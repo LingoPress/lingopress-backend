@@ -18,9 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class TranslateController {
 
     private final TranslateService translateService;
-
-
-    // DeepL을 이용한 번역은 2차 스프린트에서는 제거 후, 뉴스를 저장할 때 번역본도 다른 테이블에 저장하는 방식으로 변경 예정
+    
+    @Deprecated
     @Operation(summary = "DeepL로 번역")
     @PostMapping("/machine")
     public DataResponseDto<TranslateTextResponse> translateTextInMachine(
@@ -28,5 +27,4 @@ public class TranslateController {
 
         return DataResponseDto.of(translateService.translate(originalText));
     }
-
 }
