@@ -33,7 +33,7 @@ public class PressController {
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size
     ) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("publishedAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
         return DataResponseDto.of(
             SliceResponseDto.from(pressService.getPressList(pageable)));
