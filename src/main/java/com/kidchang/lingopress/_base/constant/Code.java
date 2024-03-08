@@ -22,10 +22,10 @@ public enum Code {
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "검증 에러가 발생하였습니다."),
 
     // Token
-    NOT_SIGNATURE_TOKEN(HttpStatus.BAD_REQUEST, "시그니처 검증에 실패한 JWT 토큰입니다"),
-    MALFORMED_TOKEN(HttpStatus.BAD_REQUEST, "손상된 JWT 토큰입니다"),
-    NOT_ACCESS_TOKEN(HttpStatus.BAD_REQUEST, "엑세스 토큰이 아닙니다"),
-    EXPIRED_TOKEN(HttpStatus.BAD_REQUEST, "만료된 JWT 토큰입니다"),
+    NOT_SIGNATURE_TOKEN(HttpStatus.BAD_REQUEST, "시그니처 검증에 실패한 JWT 토큰입니다."),
+    MALFORMED_TOKEN(HttpStatus.BAD_REQUEST, "손상된 JWT 토큰입니다."),
+    NOT_ACCESS_TOKEN(HttpStatus.BAD_REQUEST, "엑세스 토큰이 아닙니다."),
+    EXPIRED_TOKEN(HttpStatus.BAD_REQUEST, "만료된 JWT 토큰입니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증되지 않은 사용자입니다."),
     INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 Refresh Token입니다."),
     NOT_SUPPORTED_TOKEN(HttpStatus.BAD_REQUEST, "지원하지 않는 토큰입니다."),
