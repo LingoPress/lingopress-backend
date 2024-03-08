@@ -125,6 +125,9 @@ public class JwtTokenUtil {
         try {
             Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey).build()
                 .parseClaimsJws(token);
+            if (!claims.getBody().get("token_type").equals("refresh")) {
+                throw new JwtException(Code.NOT_REFERSH_TOKEN.getMessage());
+            }
             return !claims.getBody().getExpiration().before(new Date());
         } catch (ExpiredJwtException e) {
             throw new GeneralException(Code.EXPIRED_TOKEN);
