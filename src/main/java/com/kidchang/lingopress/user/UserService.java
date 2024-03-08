@@ -3,6 +3,7 @@ package com.kidchang.lingopress.user;
 import com.kidchang.lingopress._base.constant.Code;
 import com.kidchang.lingopress._base.exception.GeneralException;
 import com.kidchang.lingopress.jwt.JwtService;
+import com.kidchang.lingopress.jwt.dto.request.JwtRequest;
 import com.kidchang.lingopress.jwt.dto.response.JwtResponse;
 import com.kidchang.lingopress.user.dto.request.SigninRequest;
 import com.kidchang.lingopress.user.dto.request.SignupRequest;
@@ -52,5 +53,10 @@ public class UserService {
         return jwtResponse;
 
 
+    }
+
+    public JwtResponse reissue(JwtRequest jwtRequest) {
+        JwtResponse jwtResponse = jwtService.reissueJwt(jwtRequest);
+        return jwtResponse;
     }
 }
