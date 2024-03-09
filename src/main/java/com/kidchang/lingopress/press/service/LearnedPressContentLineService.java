@@ -74,6 +74,7 @@ public class LearnedPressContentLineService {
 
         return PressContentLineResponse.builder()
             .originalLineText(pressContent.getLineText())
+            .userTranslatedLineText(learnedPressContentLine.getUserTranslatedLine())
             .id(learnedPressContentLine.getId())
             .isCorrect(learnedPressContentLine.getIsCorrect())
             .userTranslatedLineText(learnedPressContentLine.getUserTranslatedLine())

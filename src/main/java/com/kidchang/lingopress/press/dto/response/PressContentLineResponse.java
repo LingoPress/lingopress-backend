@@ -15,11 +15,4 @@ public record PressContentLineResponse(
     Boolean isCorrect
 ) {
 
-    public static PressContentLineResponse from(Long id, Long pressContentLineNumber,
-        String userTranslatedLine, String machineTranslatedLine, String originalLine,
-        Boolean isCorrect) {
-        return new PressContentLineResponse(id, pressContentLineNumber, userTranslatedLine,
-            machineTranslatedLine, originalLine, isCorrect);
-    }
-
 }
