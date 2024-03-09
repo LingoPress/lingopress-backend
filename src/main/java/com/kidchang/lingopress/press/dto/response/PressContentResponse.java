@@ -1,7 +1,7 @@
 package com.kidchang.lingopress.press.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.kidchang.lingopress.press.Press;
+import com.kidchang.lingopress.press.entity.Press;
 import lombok.Builder;
 
 @Builder

@@ -4,6 +4,8 @@ import com.kidchang.lingopress._base.constant.Code;
 import com.kidchang.lingopress._base.exception.GeneralException;
 import com.kidchang.lingopress.press.dto.response.PressContentResponse;
 import com.kidchang.lingopress.press.dto.response.PressResponse;
+import com.kidchang.lingopress.press.entity.Press;
+import com.kidchang.lingopress.press.entity.PressContent;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
