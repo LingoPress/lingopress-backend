@@ -9,10 +9,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Getter
+@Data
+@NoArgsConstructor
 public class LearnedPress extends BaseTimeEntity {
 
     @Id
@@ -28,5 +31,13 @@ public class LearnedPress extends BaseTimeEntity {
     private Boolean isLearned;
     private String comment;
     private Integer rating;
+
+    @Builder
+    public LearnedPress(User user, Press press) {
+        this.user = user;
+        this.press = press;
+        this.isLearned = false;
+        this.comment = "";
+    }
 
 }

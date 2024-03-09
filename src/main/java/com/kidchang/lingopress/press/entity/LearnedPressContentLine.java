@@ -9,11 +9,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Getter
+@Data
 @NoArgsConstructor
 public class LearnedPressContentLine extends BaseTimeEntity {
 
@@ -37,4 +38,14 @@ public class LearnedPressContentLine extends BaseTimeEntity {
     //    private Long originalLineNumber;
     private String userTranslatedLine;
     private Boolean isCorrect;
+
+    @Builder
+    public LearnedPressContentLine(User user, LearnedPress learnedPress, PressContent pressContent,
+        String userTranslatedLine, Boolean isCorrect) {
+        this.user = user;
+        this.learnedPress = learnedPress;
+        this.pressContent = pressContent;
+        this.userTranslatedLine = userTranslatedLine;
+        this.isCorrect = isCorrect;
+    }
 }
