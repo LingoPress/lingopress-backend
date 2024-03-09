@@ -33,14 +33,15 @@ public class LearnedPressContentLine extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "press_content_id")
-    private PressContent pressContent;
+    private PressContentLine pressContent;
     //    private Long pressContentId;
     //    private Long originalLineNumber;
     private String userTranslatedLine;
     private Boolean isCorrect;
 
     @Builder
-    public LearnedPressContentLine(User user, LearnedPress learnedPress, PressContent pressContent,
+    public LearnedPressContentLine(User user, LearnedPress learnedPress,
+        PressContentLine pressContent,
         String userTranslatedLine, Boolean isCorrect) {
         this.user = user;
         this.learnedPress = learnedPress;

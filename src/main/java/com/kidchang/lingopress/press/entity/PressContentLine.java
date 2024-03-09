@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Entity
 @Data
-public class PressContent {
+public class PressContentLine {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

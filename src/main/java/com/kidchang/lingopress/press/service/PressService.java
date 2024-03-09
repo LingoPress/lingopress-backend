@@ -6,7 +6,7 @@ import com.kidchang.lingopress.press.PressRepository;
 import com.kidchang.lingopress.press.dto.response.PressContentResponse;
 import com.kidchang.lingopress.press.dto.response.PressResponse;
 import com.kidchang.lingopress.press.entity.Press;
-import com.kidchang.lingopress.press.entity.PressContent;
+import com.kidchang.lingopress.press.entity.PressContentLine;
 import com.kidchang.lingopress.press.repository.PressContentRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -32,13 +32,13 @@ public class PressService {
     public PressContentResponse getPressDetail(Long pressId) {
         Press press = pressRepository.findById(pressId)
             .orElseThrow(() -> new GeneralException(Code.PRESS_NOT_FOUND));
-        List<PressContent> pressContentList = pressContentRepository.findAllByPressId(
+        List<PressContentLine> pressContentList = pressContentRepository.findAllByPressId(
             press.getId());
 
-        String[] originalContentList = pressContentList.stream().map(PressContent::getLineText)
+        String[] originalContentList = pressContentList.stream().map(PressContentLine::getLineText)
             .toArray(String[]::new);
         String[] translatedContentList = pressContentList.stream()
-            .map(PressContent::getTranslatedLineText).toArray(String[]::new);
+            .map(PressContentLine::getTranslatedLineText).toArray(String[]::new);
 
         return PressContentResponse.from(press, originalContentList, translatedContentList);
     }
