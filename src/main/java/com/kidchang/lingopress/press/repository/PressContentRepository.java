@@ -1,4 +1,4 @@
-package com.kidchang.lingopress.press;
+package com.kidchang.lingopress.press.repository;
 
 import com.kidchang.lingopress.press.entity.PressContent;
 import java.util.List;
