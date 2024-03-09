@@ -7,7 +7,7 @@ import com.kidchang.lingopress.press.dto.response.PressContentResponse;
 import com.kidchang.lingopress.press.dto.response.PressResponse;
 import com.kidchang.lingopress.press.entity.Press;
 import com.kidchang.lingopress.press.entity.PressContentLine;
-import com.kidchang.lingopress.press.repository.PressContentRepository;
+import com.kidchang.lingopress.press.repository.PressContentLineRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 public class PressService {
 
     private final PressRepository pressRepository;
-    private final PressContentRepository pressContentRepository;
+    private final PressContentLineRepository pressContentLineRepository;
 
     public Slice<PressResponse> getPressList(Pageable pageable) {
         Slice<Press> pressSlice = pressRepository.findAll(pageable);
@@ -32,15 +32,15 @@ public class PressService {
     public PressContentResponse getPressDetail(Long pressId) {
         Press press = pressRepository.findById(pressId)
             .orElseThrow(() -> new GeneralException(Code.PRESS_NOT_FOUND));
-        List<PressContentLine> pressContentList = pressContentRepository.findAllByPressId(
+        List<PressContentLine> pressContentList = pressContentLineRepository.findAllByPressId(
             press.getId());
 
-        String[] originalContentList = pressContentList.stream().map(PressContentLine::getLineText)
+        String[] originalTextList = pressContentList.stream().map(PressContentLine::getLineText)
             .toArray(String[]::new);
-        String[] translatedContentList = pressContentList.stream()
+        String[] translatedTextList = pressContentList.stream()
             .map(PressContentLine::getTranslatedLineText).toArray(String[]::new);
 
-        return PressContentResponse.from(press, originalContentList, translatedContentList);
+        return PressContentResponse.from(press, originalTextList, translatedTextList);
     }
 
 

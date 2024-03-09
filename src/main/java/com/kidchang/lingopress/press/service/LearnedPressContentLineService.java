@@ -11,7 +11,7 @@ import com.kidchang.lingopress.press.entity.LearnedPressContentLine;
 import com.kidchang.lingopress.press.entity.Press;
 import com.kidchang.lingopress.press.entity.PressContentLine;
 import com.kidchang.lingopress.press.repository.LearnedPressContentLineRepository;
-import com.kidchang.lingopress.press.repository.PressContentRepository;
+import com.kidchang.lingopress.press.repository.PressContentLineRepository;
 import com.kidchang.lingopress.user.User;
 import com.kidchang.lingopress.user.UserRepository;
 import jakarta.transaction.Transactional;
@@ -28,7 +28,7 @@ public class LearnedPressContentLineService {
     private final PressRepository pressRepository;
     private final LearnPressService learnPressService;
     private final LearnedPressContentLineRepository learnedPressContentLineRepository;
-    private final PressContentRepository pressContentRepository;
+    private final PressContentLineRepository pressContentLineRepository;
 
     @Transactional
     public PressContentLineResponse checkPressContentLine(TranslateContentLineRequest request) {
@@ -44,7 +44,8 @@ public class LearnedPressContentLineService {
             .orElseThrow(() -> new GeneralException(Code.PRESS_NOT_FOUND));
 
         // 3. PressContent 가져오기
-        PressContentLine pressContent = pressContentRepository.findByPressIdAndLineNumber(pressId,
+        PressContentLine pressContent = pressContentLineRepository.findByPressIdAndLineNumber(
+                pressId,
                 request.contentLineNumber())
             .orElseThrow(() -> new GeneralException(Code.PRESS_NOT_FOUND));
 

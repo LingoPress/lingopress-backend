@@ -15,13 +15,13 @@ public record PressContentResponse(
     Integer totalContentLine,
     Float rating,
     String publishedAt,
-    String[] originalContent,
-    String[] translatedContent
+    String[] originalText,
+    String[] translatedText
 
 ) {
 
-    public static PressContentResponse from(Press press, String[] originalContent,
-        String[] translatedContent) {
+    public static PressContentResponse from(Press press, String[] originalText,
+        String[] translatedText) {
         return PressContentResponse.builder()
             .id(press.getId())
             .title(press.getTitle())
@@ -30,8 +30,8 @@ public record PressContentResponse(
             .totalContentLine(press.getTotalContentLine())
             .rating(press.getRating())
             .publishedAt(press.getPublishedAt().toString())
-            .originalContent(originalContent)
-            .translatedContent(translatedContent)
+            .originalText(originalText)
+            .translatedText(translatedText)
             .build();
     }
 }

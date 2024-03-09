@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PressContentRepository extends JpaRepository<PressContentLine, Long> {
+public interface PressContentLineRepository extends JpaRepository<PressContentLine, Long> {
 
     List<PressContentLine> findAllByPressId(Long id);
 
