@@ -5,10 +5,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.Getter;
+import lombok.Data;
 
 @Entity
-@Getter
+@Data
 public class PressContent {
 
     @Id
@@ -17,8 +17,8 @@ public class PressContent {
     private Long pressId;
     private Integer lineNumber;
     @Column(columnDefinition = "TEXT")
-    private String lineContent;
+    private String lineText;
     @Column(columnDefinition = "TEXT")
-    private String translatedLineContent;
+    private String translatedLineText;
 
 }
