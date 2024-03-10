@@ -1,8 +1,6 @@
 package com.kidchang.lingopress._base.utils;
 
 
-import com.kidchang.lingopress._base.constant.Code;
-import com.kidchang.lingopress._base.exception.GeneralException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,7 +14,8 @@ public class SecurityUtil {
 
         if (authentication == null || authentication.getName() == null || authentication.getName()
             .equals("anonymousUser")) {
-            throw new GeneralException(Code.AUTH_INFO_NOT_FOUND);
+//            throw new GeneralException(Code.AUTH_INFO_NOT_FOUND);
+            return null;
         }
 
         return Long.parseLong(authentication.getName());
