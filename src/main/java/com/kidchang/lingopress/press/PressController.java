@@ -9,6 +9,7 @@ import com.kidchang.lingopress.press.dto.response.PressResponse;
 import com.kidchang.lingopress.press.service.LearnedPressContentLineService;
 import com.kidchang.lingopress.press.service.PressService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -56,7 +57,7 @@ public class PressController {
     @Operation(summary = "프레스 한 줄 번역 정답 유무 전송")
     @PostMapping("/translate")
     public DataResponseDto<PressContentLineResponse> checkPressContentLine(
-        @RequestBody TranslateContentLineRequest request) {
+        @Valid @RequestBody TranslateContentLineRequest request) {
         return DataResponseDto.of(learnedPressContentLineService.checkPressContentLine(request));
     }
 
