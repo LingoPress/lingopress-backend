@@ -11,5 +11,6 @@ public interface PressContentLineRepository extends JpaRepository<PressContentLi
 
     List<PressContentLine> findAllByPressId(Long id);
 
-    Optional<PressContentLine> findByPressIdAndLineNumber(Long pressId, Long aLong);
+    Optional<PressContentLine> findByPressIdAndLineNumber(Long pressId,
+        Integer pressContentLineNumber);
 }

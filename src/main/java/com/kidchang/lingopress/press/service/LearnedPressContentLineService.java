@@ -61,6 +61,8 @@ public class LearnedPressContentLineService {
                 .learnedPress(learnedPress)
                 .pressContent(pressContent)
                 .isCorrect(request.isCorrect())
+                .pressContentLineNumber(request.contentLineNumber())
+                .press(press)
                 .user(user)
                 .userTranslatedLine(request.translateText())
                 .build();
