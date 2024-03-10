@@ -2,6 +2,7 @@ package com.kidchang.lingopress.press.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.kidchang.lingopress.press.entity.Press;
+import java.util.List;
 import lombok.Builder;
 
 @Builder
@@ -9,19 +10,16 @@ import lombok.Builder;
 public record PressContentResponse(
     Long id,
     String title,
-//    String content,
     String imageUrl,
     String originalUrl,
     Integer totalContentLine,
     Float rating,
     String publishedAt,
-    String[] originalText,
-    String[] translatedText
-
+    List<PressContentLineResponse> content
 ) {
 
-    public static PressContentResponse from(Press press, String[] originalText,
-        String[] translatedText) {
+    public static PressContentResponse from(Press press,
+        List<PressContentLineResponse> pressContentLines) {
         return PressContentResponse.builder()
             .id(press.getId())
             .title(press.getTitle())
@@ -30,8 +28,7 @@ public record PressContentResponse(
             .totalContentLine(press.getTotalContentLine())
             .rating(press.getRating())
             .publishedAt(press.getPublishedAt().toString())
-            .originalText(originalText)
-            .translatedText(translatedText)
+            .content(pressContentLines)
             .build();
     }
 }
