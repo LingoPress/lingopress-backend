@@ -54,7 +54,7 @@ public class LearnedPressContentLineService {
 
         // 5. 기존에 LearnedPressContentLine 있는지 확인
         LearnedPressContentLine learnedPressContentLine = learnedPressContentLineRepository
-            .findByLearnedPressAndPressContent(learnedPress, pressContentLine)
+            .findByLearnedPressAndPressContentLine(learnedPress, pressContentLine)
             .orElse(null);
         if (learnedPressContentLine == null) {
             learnedPressContentLine = LearnedPressContentLine.builder()

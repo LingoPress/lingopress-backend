@@ -15,8 +15,9 @@ import org.springframework.stereotype.Repository;
 public interface LearnedPressContentLineRepository extends
     JpaRepository<LearnedPressContentLine, Integer> {
 
-    Optional<LearnedPressContentLine> findByLearnedPressAndPressContent(LearnedPress learnedPress,
-        PressContentLine pressContent);
+    Optional<LearnedPressContentLine> findByLearnedPressAndPressContentLine(
+        LearnedPress learnedPress,
+        PressContentLine pressContentLine);
 
 // 내가 짠 코드
 //    @Query(
