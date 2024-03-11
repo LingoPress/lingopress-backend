@@ -44,7 +44,7 @@ public class LearnedPressContentLineService {
             .orElseThrow(() -> new GeneralException(Code.PRESS_NOT_FOUND));
 
         // 3. PressContent 가져오기
-        PressContentLine pressContent = pressContentLineRepository.findByPressIdAndLineNumber(
+        PressContentLine pressContentLine = pressContentLineRepository.findByPressIdAndLineNumber(
                 pressId,
                 request.contentLineNumber())
             .orElseThrow(() -> new GeneralException(Code.PRESS_NOT_FOUND));
@@ -54,14 +54,14 @@ public class LearnedPressContentLineService {
 
         // 5. 기존에 LearnedPressContentLine 있는지 확인
         LearnedPressContentLine learnedPressContentLine = learnedPressContentLineRepository
-            .findByLearnedPressAndPressContent(learnedPress, pressContent)
+            .findByLearnedPressAndPressContent(learnedPress, pressContentLine)
             .orElse(null);
         if (learnedPressContentLine == null) {
             learnedPressContentLine = LearnedPressContentLine.builder()
                 .learnedPress(learnedPress)
-                .pressContent(pressContent)
+                .pressContentLine(pressContentLine)
                 .isCorrect(request.isCorrect())
-                .pressContentLineNumber(request.contentLineNumber())
+                .lineNumber(request.contentLineNumber())
                 .press(press)
                 .user(user)
                 .userTranslatedLine(request.translateText())
@@ -75,7 +75,7 @@ public class LearnedPressContentLineService {
         }
 
         return PressContentLineResponse.builder()
-            .originalLineText(pressContent.getLineText())
+            .originalLineText(pressContentLine.getLineText())
             .userTranslatedLineText(learnedPressContentLine.getUserTranslatedLine())
             .id(learnedPressContentLine.getId())
             .isCorrect(learnedPressContentLine.getIsCorrect())
