@@ -38,6 +38,7 @@ public class LearnedPress extends BaseTimeEntity {
         this.press = press;
         this.isLearned = false;
         this.comment = "";
+        this.rating = 3;
     }
 
 }
