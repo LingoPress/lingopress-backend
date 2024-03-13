@@ -43,6 +43,7 @@ public class SecurityConfig {
                         "/api/v1/users/sign-up",
                         "/api/v1/users/sign-in/**",
                         "/api/v1/users/reissue",
+                        "/api/v1/users/status",
                         "api/v1/press/**"
                     ).permitAll()
                     .anyRequest().authenticated()
