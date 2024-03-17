@@ -43,13 +43,13 @@ public class LearnedPressContentLineService {
         Press press = pressRepository.findById(pressId)
             .orElseThrow(() -> new GeneralException(Code.PRESS_NOT_FOUND));
 
-        // 3. PressContent 가져오기
+        // 3. PressContentLine 가져오기
         PressContentLine pressContentLine = pressContentLineRepository.findByPressIdAndLineNumber(
                 pressId,
                 request.contentLineNumber())
             .orElseThrow(() -> new GeneralException(Code.PRESS_NOT_FOUND));
 
-        // 4. LearnedPress 가져오기
+        // 4. LearnedPressLine 가져오기
         LearnedPress learnedPress = learnPressService.findOrCreateLearnedPress(user, press);
 
         // 5. 기존에 LearnedPressContentLine 있는지 확인
