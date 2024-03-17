@@ -6,7 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Size;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -26,5 +26,5 @@ public class Press {
     @ColumnDefault("3")
     @Size(min = 0, max = 5, message = "유저 점수의 평균은 0~5사이 입니다.")
     private Float rating;
-    private Date publishedAt;
+    private LocalDateTime publishedAt;
 }
