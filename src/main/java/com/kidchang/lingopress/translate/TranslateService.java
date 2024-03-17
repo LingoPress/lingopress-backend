@@ -43,7 +43,8 @@ public class TranslateService {
 
         Long userId = SecurityUtil.getUserId();
         // 1. 번역 횟수 기록하기
-        TranslateApiUsageTracker tracker = translateApiUsageTrackerRepository.findByUserId(userId);
+        TranslateApiUsageTracker tracker = translateApiUsageTrackerRepository.findByUserIdAndRequestDate(
+            userId, LocalDate.now());
 
         if (tracker == null) {
             tracker = TranslateApiUsageTracker.builder()
