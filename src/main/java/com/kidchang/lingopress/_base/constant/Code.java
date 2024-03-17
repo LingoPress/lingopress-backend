@@ -46,7 +46,7 @@ public enum Code {
     PRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 뉴스를 찾을 수 없습니다."),
 
     // Translate
-    TRANSLATION_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "번역 횟수 제한을 초과하였습니다.");
+    TRANSLATION_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "오늘 번역 횟수 제한(10번)을 초과하였습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
