@@ -53,8 +53,8 @@ public class TranslateService {
             translateApiUsageTrackerRepository.save(tracker);
         }
 
-        // 2. 번역 횟수가 10회가 넘으면 예외 발생시키기
-        if (tracker.getRequestCount() >= 10) {
+        // 2. 번역 횟수가 20회가 넘으면 예외 발생시키기
+        if (tracker.getRequestCount() >= 20) {
             throw new GeneralException(Code.TRANSLATION_LIMIT_EXCEEDED);
         }
 
