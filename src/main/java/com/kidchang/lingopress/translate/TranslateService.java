@@ -28,7 +28,6 @@ public class TranslateService {
             DeepLRequest deepLRequest = DeepLRequest.builder()
                 .text(new String[]{text.getOriginalText()}).target_lang("KO").build();
             DeepLResponse deepLResponse = deepLClient.translate(deepLRequest);
-            log.info("deepLResponse: " + deepLResponse);
 
             return TranslateTextResponse.builder()
                 .translatedText(deepLResponse.getTranslations()[0].getText())

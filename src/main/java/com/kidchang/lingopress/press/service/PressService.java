@@ -50,7 +50,6 @@ public class PressService {
             List<PressContentLineResponse> pressContent = learnedPressContentLineRepository.findByUserAndPressAndPressContent(
                 user.getId(),
                 press.getId());
-            log.info("@@@ pressContent: {}", pressContent.toString());
             return PressContentResponse.from(press, pressContent);
         }
         List<PressContentLine> pressContentList = pressContentLineRepository.findAllByPressId(
