@@ -1,13 +1,10 @@
 package com.kidchang.lingopress.word;
 
-import com.kidchang.lingopress.press.entity.Press;
-import com.kidchang.lingopress.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,10 +17,12 @@ public class WordToLearn {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    private User user;
-    @ManyToOne
-    private Press press;
+    //@ManyToOne
+    //private User user;
+    //@ManyToOne
+    //private Press press;
+    private Long userId;
+    private Long pressId;
     private String word;
     private Integer lineNumber;
     @Column(columnDefinition = "TEXT")
@@ -34,10 +33,14 @@ public class WordToLearn {
     private boolean isLearned;
 
     @Builder
-    public WordToLearn(User user, Press press, String word, String originalLineText,
+    public WordToLearn(
+        // User user, Press press,
+        Long userId, Long pressId, String word, String originalLineText,
         Integer lineNumber, String translatedWord) {
-        this.user = user;
-        this.press = press;
+        // this.user = user;
+        // this.press = press;
+        this.userId = userId;
+        this.pressId = pressId;
         this.word = word;
         this.originalLineText = originalLineText;
         this.lineNumber = lineNumber;
