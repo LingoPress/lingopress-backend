@@ -73,6 +73,11 @@ public class LearnedPressContentLineService {
             learnedPressContentLine.setUserTranslatedLine(request.translateText());
         }
 
+        // 문장이 맞으면 learnedPress의 번역한 문장 수를 증가시킨다.
+        if (request.isCorrect()) {
+            learnedPress.increaseTranslatedLineCount();
+        }
+
         return PressContentLineResponse.builder()
             .originalLineText(pressContentLine.getLineText())
             .userTranslatedLineText(learnedPressContentLine.getUserTranslatedLine())
