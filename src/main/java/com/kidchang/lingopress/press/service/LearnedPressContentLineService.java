@@ -37,7 +37,6 @@ public class LearnedPressContentLineService {
         Long userId = SecurityUtil.getUserId();
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new GeneralException(Code.NOT_FOUND_USER));
-        log.info("@@@ userId: {}", userId);
 
         // 2. Press 가져오기
         Press press = pressRepository.findById(pressId)

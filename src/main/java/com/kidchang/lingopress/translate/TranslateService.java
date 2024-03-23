@@ -28,7 +28,6 @@ public class TranslateService {
             DeepLRequest deepLRequest = DeepLRequest.builder()
                 .text(new String[]{text.getOriginalText()}).target_lang("KO").build();
             DeepLResponse deepLResponse = deepLClient.translate(deepLRequest);
-            log.info("deepLResponse: " + deepLResponse);
 
             return TranslateTextResponse.builder()
                 .translatedText(deepLResponse.getTranslations()[0].getText())
@@ -44,7 +43,8 @@ public class TranslateService {
 
         Long userId = SecurityUtil.getUserId();
         // 1. 번역 횟수 기록하기
-        TranslateApiUsageTracker tracker = translateApiUsageTrackerRepository.findByUserId(userId);
+        TranslateApiUsageTracker tracker = translateApiUsageTrackerRepository.findByUserIdAndRequestDate(
+            userId, LocalDate.now());
 
         if (tracker == null) {
             tracker = TranslateApiUsageTracker.builder()
@@ -54,8 +54,8 @@ public class TranslateService {
             translateApiUsageTrackerRepository.save(tracker);
         }
 
-        // 2. 번역 횟수가 10회가 넘으면 예외 발생시키기
-        if (tracker.getRequestCount() >= 10) {
+        // 2. 번역 횟수가 20회가 넘으면 예외 발생시키기
+        if (tracker.getRequestCount() >= 20) {
             throw new GeneralException(Code.TRANSLATION_LIMIT_EXCEEDED);
         }
 

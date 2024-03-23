@@ -1,5 +1,6 @@
 package com.kidchang.lingopress.translate;
 
+import java.time.LocalDate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -7,6 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface TranslateApiUsageTrackerRepository extends
     JpaRepository<TranslateApiUsageTracker, Integer> {
 
-    TranslateApiUsageTracker findByUserId(Long userId);
-
+    TranslateApiUsageTracker findByUserIdAndRequestDate(Long userId, LocalDate requestDate);
 }

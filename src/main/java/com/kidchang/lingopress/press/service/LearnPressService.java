@@ -20,7 +20,6 @@ public class LearnPressService {
         // 3. pressId와 userId를 기반으로 learnedPress를 조회한다.
         Optional<LearnedPress> learnedPress = learnedPressRepository.findByUserAndPress(
             user, press);
-        log.info("@@@ learnedPress: {}", learnedPress.toString());
 
         // 4. learnedPress가 없으면 새로 생성한다.
         if (learnedPress.isEmpty()) {
