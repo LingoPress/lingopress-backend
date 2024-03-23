@@ -1,5 +1,7 @@
 package com.kidchang.lingopress.press.service;
 
+import com.kidchang.lingopress._base.utils.SecurityUtil;
+import com.kidchang.lingopress.press.dto.response.LearnedPressResponse;
 import com.kidchang.lingopress.press.entity.LearnedPress;
 import com.kidchang.lingopress.press.entity.Press;
 import com.kidchang.lingopress.press.repository.LearnedPressRepository;
@@ -7,6 +9,8 @@ import com.kidchang.lingopress.user.User;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,6 +34,15 @@ public class LearnPressService {
         }
 
         return learnedPress.get();
+    }
+
+
+    public Slice<LearnedPressResponse> getLearnedPressList(Pageable pageable) {
+        Long userId = SecurityUtil.getUserId();
+        Slice<LearnedPress> pressSlice = learnedPressRepository.findByUserId(userId, pageable);
+        Slice<LearnedPressResponse> learnedPressResponses = pressSlice.map(
+            LearnedPressResponse::from);
+        return learnedPressResponses;
     }
 
 }
