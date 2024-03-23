@@ -31,6 +31,7 @@ public class LearnedPress extends BaseTimeEntity {
     private Boolean isLearned;
     private String comment;
     private Integer rating;
+    private Integer learnedContentLine;
 
     @Builder
     public LearnedPress(User user, Press press) {
@@ -39,6 +40,10 @@ public class LearnedPress extends BaseTimeEntity {
         this.isLearned = false;
         this.comment = "";
         this.rating = 3;
+        this.learnedContentLine = 0;
     }
 
+    public void increaseTranslatedLineCount() {
+        this.learnedContentLine++;
+    }
 }
