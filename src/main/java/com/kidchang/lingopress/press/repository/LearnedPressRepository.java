@@ -4,9 +4,13 @@ import com.kidchang.lingopress.press.entity.LearnedPress;
 import com.kidchang.lingopress.press.entity.Press;
 import com.kidchang.lingopress.user.User;
 import java.util.Optional;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LearnedPressRepository extends JpaRepository<LearnedPress, Long> {
 
     Optional<LearnedPress> findByUserAndPress(User user, Press press);
+
+    Slice<LearnedPress> findByUserId(Long userId, Pageable pageable);
 }
