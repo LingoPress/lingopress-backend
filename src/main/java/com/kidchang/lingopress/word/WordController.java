@@ -3,6 +3,7 @@ package com.kidchang.lingopress.word;
 import com.kidchang.lingopress._base.response.DataResponseDto;
 import com.kidchang.lingopress.word.dto.request.WordToLearnRequest;
 import com.kidchang.lingopress.word.dto.response.WordToLearnResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,12 @@ public class WordController {
         @PathVariable Long pressId
     ) {
         return DataResponseDto.of(wordService.getWordToLearn(pressId));
+    }
+
+    @Operation(summary = "내가 학습할 단어 목록 조회")
+    @GetMapping("/need-to-learn")
+    public DataResponseDto<List<WordToLearnResponse>> getMyWords() {
+        return DataResponseDto.of(wordService.getWordToLearn());
     }
 
 

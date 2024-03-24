@@ -9,4 +9,5 @@ public interface WordRepository extends JpaRepository<WordToLearn, Long> {
 
     List<WordToLearn> findAllByUserIdAndPressId(Long userId, Long pressId);
 
+    List<WordToLearn> findAllByUserId(Long userId);
 }
