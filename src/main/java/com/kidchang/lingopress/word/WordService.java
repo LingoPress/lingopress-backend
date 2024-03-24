@@ -69,7 +69,16 @@ public class WordService {
 
         List<WordToLearn> wordsToLearn = wordRepository.findAllByUserIdAndPressId(userId,
             pressId);
-        
+
+        return WordToLearnResponse.listOf(wordsToLearn);
+    }
+
+    public List<WordToLearnResponse> getWordToLearn() {
+        // user id기반으로 유저가 모른다고 등록한 단어 가져오기
+        Long userId = SecurityUtil.getUserId();
+
+        List<WordToLearn> wordsToLearn = wordRepository.findAllByUserId(userId);
+
         return WordToLearnResponse.listOf(wordsToLearn);
     }
 }

@@ -13,7 +13,8 @@ public record WordToLearnResponse(
     String translatedWord,
     String originalLineText,
     Integer lineNumber,
-    boolean isLearned
+    boolean isLearned,
+    Long pressId
 ) {
 
 
@@ -31,6 +32,7 @@ public record WordToLearnResponse(
             .originalLineText(wordToLearn.getOriginalLineText())
             .lineNumber(wordToLearn.getLineNumber())
             .isLearned(wordToLearn.isLearned())
+            .pressId(wordToLearn.getPressId())
             .build();
     }
 }
