@@ -3,7 +3,7 @@ package com.kidchang.lingopress.word;
 import com.kidchang.lingopress._base.utils.SecurityUtil;
 import com.kidchang.lingopress.press.PressRepository;
 import com.kidchang.lingopress.translate.TranslateService;
-import com.kidchang.lingopress.translate.dto.request.TranslateTextRequest;
+import com.kidchang.lingopress.translate.dto.request.LingoGptRequest;
 import com.kidchang.lingopress.translate.dto.response.TranslateTextResponse;
 import com.kidchang.lingopress.user.UserRepository;
 import com.kidchang.lingopress.word.dto.request.WordToLearnRequest;
@@ -37,8 +37,9 @@ public class WordService {
 
         // 3. 뜻 해석하기
         TranslateTextResponse translateTextResponse = translateService.translateWithUsageTracker(
-            TranslateTextRequest.builder()
-                .originalText(request.word())
+            LingoGptRequest.builder()
+                .original_text(request.originalText())
+                .word(request.word())
                 .build());
 
         WordToLearn wordToLearn = WordToLearn.builder()

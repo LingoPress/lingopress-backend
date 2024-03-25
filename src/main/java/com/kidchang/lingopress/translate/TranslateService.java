@@ -3,10 +3,9 @@ package com.kidchang.lingopress.translate;
 import com.kidchang.lingopress._base.constant.Code;
 import com.kidchang.lingopress._base.exception.GeneralException;
 import com.kidchang.lingopress._base.utils.SecurityUtil;
-import com.kidchang.lingopress.client.DeepLClient;
-import com.kidchang.lingopress.translate.dto.request.DeepLRequest;
-import com.kidchang.lingopress.translate.dto.request.TranslateTextRequest;
-import com.kidchang.lingopress.translate.dto.response.DeepLResponse;
+import com.kidchang.lingopress.client.LingoGptClient;
+import com.kidchang.lingopress.translate.dto.request.LingoGptRequest;
+import com.kidchang.lingopress.translate.dto.response.LingoGptResponse;
 import com.kidchang.lingopress.translate.dto.response.TranslateTextResponse;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
@@ -19,18 +18,16 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TranslateService {
 
-    private final DeepLClient deepLClient;
+    private final LingoGptClient lingoGptClient;
     private final TranslateApiUsageTrackerRepository translateApiUsageTrackerRepository;
 
-    public TranslateTextResponse translate(TranslateTextRequest text) {
+    public TranslateTextResponse translate(LingoGptRequest text) {
 
         try {
-            DeepLRequest deepLRequest = DeepLRequest.builder()
-                .text(new String[]{text.getOriginalText()}).target_lang("KO").build();
-            DeepLResponse deepLResponse = deepLClient.translate(deepLRequest);
-
+            LingoGptResponse lingoGptResponse = lingoGptClient.translate(text);
+            log.info("@@ using token : {}", lingoGptResponse.getToken());
             return TranslateTextResponse.builder()
-                .translatedText(deepLResponse.getTranslations()[0].getText())
+                .translatedText(lingoGptResponse.getText())
                 .build();
 
         } catch (Exception e) {
@@ -39,7 +36,7 @@ public class TranslateService {
     }
 
     @Transactional
-    public TranslateTextResponse translateWithUsageTracker(TranslateTextRequest text) {
+    public TranslateTextResponse translateWithUsageTracker(LingoGptRequest text) {
 
         Long userId = SecurityUtil.getUserId();
         // 1. 번역 횟수 기록하기
