@@ -1,10 +1,6 @@
 package com.kidchang.lingopress.word;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,9 +30,9 @@ public class WordToLearn {
 
     @Builder
     public WordToLearn(
-        // User user, Press press,
-        Long userId, Long pressId, String word, String originalLineText,
-        Integer lineNumber, String translatedWord) {
+            // User user, Press press,
+            Long userId, Long pressId, String word, String originalLineText,
+            Integer lineNumber, String translatedWord) {
         // this.user = user;
         // this.press = press;
         this.userId = userId;
@@ -47,4 +43,7 @@ public class WordToLearn {
         this.translatedWord = translatedWord;
     }
 
+    public void updateTranslatedWord(String word) {
+        this.translatedWord = word;
+    }
 }
