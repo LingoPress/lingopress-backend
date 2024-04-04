@@ -71,7 +71,7 @@ public class WordService {
         // user id, press id기반으로 유저가 모른다고 등록한 단어 가져오기
         Long userId = SecurityUtil.getUserId();
 
-        List<WordToLearn> wordsToLearn = wordRepository.findAllByUserIdAndPressIdOrderById(userId,
+        List<WordToLearn> wordsToLearn = wordRepository.findAllByUserIdAndPressIdOrderByIdDesc(userId,
                 pressId);
 
         return WordToLearnResponse.listOf(wordsToLearn);
@@ -81,7 +81,7 @@ public class WordService {
         // user id기반으로 유저가 모른다고 등록한 단어 가져오기
         Long userId = SecurityUtil.getUserId();
 
-        List<WordToLearn> wordsToLearn = wordRepository.findAllByUserId(userId);
+        List<WordToLearn> wordsToLearn = wordRepository.findAllByUserIdOrderByIdDesc(userId);
 
         return WordToLearnResponse.listOf(wordsToLearn);
     }

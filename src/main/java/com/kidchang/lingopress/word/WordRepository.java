@@ -8,7 +8,7 @@ import java.util.List;
 @Repository
 public interface WordRepository extends JpaRepository<WordToLearn, Long> {
 
-    List<WordToLearn> findAllByUserIdAndPressIdOrderById(Long userId, Long pressId);
+    List<WordToLearn> findAllByUserIdAndPressIdOrderByIdDesc(Long userId, Long pressId);
 
-    List<WordToLearn> findAllByUserId(Long userId);
+    List<WordToLearn> findAllByUserIdOrderByIdDesc(Long userId);
 }
