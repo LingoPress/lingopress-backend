@@ -26,7 +26,9 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
-        response.setCharacterEncoding("utf-8");
+        response.setCharacterEncoding("UTF-8");
+        // UTF-8 인코딩 에러 해결
+        response.setContentType("text/html;charset=utf-8");
         try {
             filterChain.doFilter(request, response);
         } catch (JwtException ex) {
@@ -50,8 +52,9 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
 
     private void setResponse(HttpServletResponse response, Code errorCode)
         throws RuntimeException, IOException {
-        response.setStatus(401);
+        response.setStatus(errorCode.getHttpStatus().value());
         JSONObject responseJson = new JSONObject();
+        responseJson.put("code", errorCode);
         responseJson.put("message", errorCode.getMessage());
 
         response.getWriter().print(responseJson);

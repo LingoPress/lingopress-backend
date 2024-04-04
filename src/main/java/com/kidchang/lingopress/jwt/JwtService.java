@@ -6,12 +6,14 @@ import com.kidchang.lingopress.jwt.dto.request.JwtRequest;
 import com.kidchang.lingopress.jwt.dto.response.JwtResponse;
 import com.kidchang.lingopress.user.User;
 import com.kidchang.lingopress.user.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class JwtService {
 
     private final JwtTokenUtil jwtTokenUtil;
@@ -36,7 +38,7 @@ public class JwtService {
     }
 
     public JwtResponse reissueJwt(JwtRequest jwtRequest) {
-        if (!jwtTokenUtil.validateToken(jwtRequest.refreshToken())) {
+        if (!jwtTokenUtil.ValidateRefreshToken(jwtRequest.refreshToken())) {
             throw new GeneralException(Code.INVALID_REFRESH_TOKEN);
         }
 

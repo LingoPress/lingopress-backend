@@ -116,7 +116,6 @@ public class JwtTokenUtil {
         } catch (MalformedJwtException e) {
             throw new JwtException(Code.MALFORMED_TOKEN.getMessage());
         } catch (JwtException e) {
-            log.info("JwtException: {}", e.getMessage());
             throw new JwtException(e.getMessage());
         }
     }
@@ -125,9 +124,12 @@ public class JwtTokenUtil {
         try {
             Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey).build()
                 .parseClaimsJws(token);
+            if (!claims.getBody().get("token_type").equals("refresh")) {
+                throw new JwtException(Code.NOT_REFRESH_TOKEN.getMessage());
+            }
             return !claims.getBody().getExpiration().before(new Date());
         } catch (ExpiredJwtException e) {
-            throw new GeneralException(Code.EXPIRED_TOKEN);
+            throw new GeneralException(Code.EXPIRED_REFRESH_TOKEN);
         } catch (SignatureException e) {
             throw new GeneralException(Code.NOT_SIGNATURE_TOKEN);
         } catch (MalformedJwtException e) {

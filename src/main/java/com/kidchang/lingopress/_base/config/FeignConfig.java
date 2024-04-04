@@ -8,15 +8,17 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableFeignClients(basePackages = "com.kidchang.lingopress.client")
-public class FeignDeepLConfig {
+public class FeignConfig {
 
-    @Value("${deepl.auth-key}")
+    //    @Value("${deepl.auth-key}")
+    @Value("${chatgpt.auth-key}")
     private String apiKey;
 
     @Bean
     public RequestInterceptor requestInterceptor() {
         return template -> {
-            template.header("Authorization", "DeepL-Auth-Key " + apiKey);
+//            template.header("Authorization", "DeepL-Auth-Key " + apiKey);
+            template.header("api-key", apiKey);
             template.header("Accept", "application/json");
         };
     }
