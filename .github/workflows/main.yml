@@ -1,0 +1,68 @@
+# github repository actions 페이지에 나타날 이름
+name: CI/CD using github actions & docker
+
+# event trigger
+# main이나 develop 브랜치에 push가 되었을 때 실행
+on:
+  push:
+    branches: [ "main", "dev" ]
+
+permissions:
+  contents: read
+
+jobs:
+  CI-CD:
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # gradle caching - 빌드 시간 향상
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # gradle build
+      - name: Build with Gradle
+        run: ./gradlew build -x test
+
+      # docker build & push to production
+      - name: Docker build & push to prod
+        if: contains(github.ref, 'main')
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -f Dockerfile-dev -t ${{ secrets.DOCKER_USERNAME }}/lingopress-backend .
+          docker push ${{ secrets.DOCKER_USERNAME }}/docker-test-prod
+
+          
+      ## deploy to production
+      - name: Deploy to prod
+        uses: appleboy/ssh-action@master
+        id: deploy-prod
+        if: contains(github.ref, 'main')
+        with:
+          host: ${{ secrets.HOST_PROD }} # EC2 퍼블릭 IPv4 DNS
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            sudo docker ps
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/lingopress-backend
+            sudo docker run --rm -p 8080:8080 --name lingopress-backend \
+                    --network lingopress_network \
+                    -d kidchanghyun/lingopress-backend \
+                    --DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }} \
+                    --DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }} \
+                    --CHATGPT_KEY=${{ secrets.CHATGPT_KEY }} \
+                    --JWT_SECRET=${{ secrets.JWT_SECRET }}
+            sudo docker image prune -f
