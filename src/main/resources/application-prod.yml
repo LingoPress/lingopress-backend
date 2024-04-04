@@ -1,0 +1,52 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: Asia/Seoul
+    show-sql: false
+  server:
+    tomcat:
+      uri-encoding: UTF-8
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: ${datasource-username}
+    password: ${datasource-password}
+    url: jdbc:postgresql://lingopress-db:5432/lingopress
+    hikari:
+      max-lifetime: 25800 # Possibly consider using a shorter maxLifetime value. 오류로 인해 추가
+
+
+jwt:
+  secret: ${jwt-secret}
+
+#deepl:
+#  auth-key: ${deepl-key}
+
+chatgpt:
+  auth-key: ${chatgpt-key}
+
+
+lingo-ai:
+  url: http://lingopress-ai:8000
+
+
+greeting:
+  message: this is prod application.yml
+
+
+springdoc:
+  api-docs:
+    enabled: true
