@@ -60,6 +60,10 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            sudo docker stop lingopress-backend
+                  while sudo docker inspect -f '{{.State.Running}}' lingopress-backend; do
+                sleep 1
+            done
             sudo docker ps
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/lingopress-backend
             sudo docker run --rm -p 8080:8080 --name lingopress-backend \
