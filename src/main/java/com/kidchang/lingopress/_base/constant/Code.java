@@ -1,10 +1,11 @@
 package com.kidchang.lingopress._base.constant;
 
-import java.util.Optional;
-import java.util.function.Predicate;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+
+import java.util.Optional;
+import java.util.function.Predicate;
 
 @Getter
 @RequiredArgsConstructor
@@ -46,7 +47,8 @@ public enum Code {
     PRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 뉴스를 찾을 수 없습니다."),
 
     // Translate
-    TRANSLATION_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "오늘 번역 횟수 제한(10번)을 초과하였습니다.");
+    TRANSLATION_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "오늘 번역 횟수 제한(50번)을 초과하였습니다."),
+    TRANSLATION_TEXT_TOO_LONG(HttpStatus.BAD_REQUEST, "번역할 텍스트가 너무 깁니다. 정상적인 문장이라면 제보해주세요.");
 
     private final HttpStatus httpStatus;
     private final String message;
@@ -57,7 +59,7 @@ public enum Code {
 
     public String getMessage(String message) {
         return Optional.ofNullable(message)
-            .filter(Predicate.not(String::isBlank))
-            .orElse(this.getMessage());
+                .filter(Predicate.not(String::isBlank))
+                .orElse(this.getMessage());
     }
 }

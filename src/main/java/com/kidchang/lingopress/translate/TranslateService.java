@@ -8,10 +8,11 @@ import com.kidchang.lingopress.translate.dto.request.LingoGptRequest;
 import com.kidchang.lingopress.translate.dto.response.LingoGptResponse;
 import com.kidchang.lingopress.translate.dto.response.TranslateTextResponse;
 import jakarta.transaction.Transactional;
-import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 
 @Slf4j
 @Service
@@ -27,8 +28,8 @@ public class TranslateService {
             LingoGptResponse lingoGptResponse = lingoGptClient.translate(text);
             log.info("@@ using token : {}", lingoGptResponse.getToken());
             return TranslateTextResponse.builder()
-                .translatedText(lingoGptResponse.getText())
-                .build();
+                    .translatedText(lingoGptResponse.getText())
+                    .build();
 
         } catch (Exception e) {
             throw new GeneralException(Code.TRANSLATION_ERROR, e);
@@ -41,19 +42,24 @@ public class TranslateService {
         Long userId = SecurityUtil.getUserId();
         // 1. 번역 횟수 기록하기
         TranslateApiUsageTracker tracker = translateApiUsageTrackerRepository.findByUserIdAndRequestDate(
-            userId, LocalDate.now());
+                userId, LocalDate.now());
 
         if (tracker == null) {
             tracker = TranslateApiUsageTracker.builder()
-                .userId(userId)
-                .requestDate(LocalDate.now())
-                .build();
+                    .userId(userId)
+                    .requestDate(LocalDate.now())
+                    .build();
             translateApiUsageTrackerRepository.save(tracker);
         }
 
         // 2. 번역 횟수가 20회가 넘으면 예외 발생시키기
-        if (tracker.getRequestCount() >= 20) {
+        if (tracker.getRequestCount() >= 50) {
             throw new GeneralException(Code.TRANSLATION_LIMIT_EXCEEDED);
+        }
+
+        // 글자수가 너무 길면 예외 발생시키기
+        if (text.getOriginal_text().length() > 1200) {
+            throw new GeneralException(Code.TRANSLATION_TEXT_TOO_LONG);
         }
 
         // 3. 번역하기
