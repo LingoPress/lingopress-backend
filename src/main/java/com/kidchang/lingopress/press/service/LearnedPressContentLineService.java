@@ -36,39 +36,43 @@ public class LearnedPressContentLineService {
         // 1. User 가져오기
         Long userId = SecurityUtil.getUserId();
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new GeneralException(Code.NOT_FOUND_USER));
+                .orElseThrow(() -> new GeneralException(Code.NOT_FOUND_USER));
 
         // 2. Press 가져오기
         Press press = pressRepository.findById(pressId)
-            .orElseThrow(() -> new GeneralException(Code.PRESS_NOT_FOUND));
+                .orElseThrow(() -> new GeneralException(Code.PRESS_NOT_FOUND));
 
         // 3. PressContentLine 가져오기
         PressContentLine pressContentLine = pressContentLineRepository.findByPressIdAndLineNumber(
-                pressId,
-                request.contentLineNumber())
-            .orElseThrow(() -> new GeneralException(Code.PRESS_NOT_FOUND));
+                        pressId,
+                        request.contentLineNumber())
+                .orElseThrow(() -> new GeneralException(Code.PRESS_NOT_FOUND));
 
         // 4. LearnedPressLine 가져오기
         LearnedPress learnedPress = learnPressService.findOrCreateLearnedPress(user, press);
 
         // 5. 기존에 LearnedPressContentLine 있는지 확인
         LearnedPressContentLine learnedPressContentLine = learnedPressContentLineRepository
-            .findByLearnedPressAndPressContentLine(learnedPress, pressContentLine)
-            .orElse(null);
+                .findByLearnedPressAndPressContentLine(learnedPress, pressContentLine)
+                .orElse(null);
         if (learnedPressContentLine == null) {
             learnedPressContentLine = LearnedPressContentLine.builder()
-                .learnedPress(learnedPress)
-                .pressContentLine(pressContentLine)
-                .isCorrect(request.isCorrect())
-                .lineNumber(request.contentLineNumber())
-                .press(press)
-                .user(user)
-                .userTranslatedLine(request.translateText())
-                .build();
+                    .learnedPress(learnedPress)
+                    .pressContentLine(pressContentLine)
+                    .isCorrect(request.isCorrect())
+                    .lineNumber(request.contentLineNumber())
+                    .press(press)
+                    .user(user)
+                    .userTranslatedLine(request.translateText())
+                    .build();
             learnedPressContentLineRepository.save(
-                learnedPressContentLine);
+                    learnedPressContentLine);
 
         } else {
+            // 이미 있는 문장이라면, 기존 카운트 내역 제거
+            if (learnedPressContentLine.getIsCorrect()) {
+                learnedPress.decreaseTranslatedLineCount();
+            }
             learnedPressContentLine.setIsCorrect(request.isCorrect());
             learnedPressContentLine.setUserTranslatedLine(request.translateText());
         }
@@ -79,12 +83,12 @@ public class LearnedPressContentLineService {
         }
 
         return PressContentLineResponse.builder()
-            .originalLineText(pressContentLine.getLineText())
-            .userTranslatedLineText(learnedPressContentLine.getUserTranslatedLine())
-            .id(learnedPressContentLine.getId())
-            .isCorrect(learnedPressContentLine.getIsCorrect())
-            .userTranslatedLineText(learnedPressContentLine.getUserTranslatedLine())
-            .build();
+                .originalLineText(pressContentLine.getLineText())
+                .userTranslatedLineText(learnedPressContentLine.getUserTranslatedLine())
+                .id(learnedPressContentLine.getId())
+                .isCorrect(learnedPressContentLine.getIsCorrect())
+                .userTranslatedLineText(learnedPressContentLine.getUserTranslatedLine())
+                .build();
 
     }
 
