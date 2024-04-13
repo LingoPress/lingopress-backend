@@ -31,26 +31,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(AbstractHttpConfigurer::disable)
-            .sessionManagement((sessionManagement) ->
-                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            .authorizeHttpRequests(authorizeRequests ->
-                authorizeRequests
-                    .requestMatchers("/", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**")
-                    .permitAll()
-                    .requestMatchers(
-                        "/api/v1/users/sign-up",
-                        "/api/v1/users/sign-in/**",
-                        "/api/v1/users/reissue",
-                        "/api/v1/users/status",
-                        "api/v1/press/**"
-                    ).permitAll()
-                    .anyRequest().authenticated()
-            )
-            .addFilterBefore(new JwtFilter(jwtTokenUtil),
-                UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(jwtExceptionFilter, JwtFilter.class);
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement((sessionManagement) ->
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .authorizeHttpRequests(authorizeRequests ->
+                        authorizeRequests
+                                .requestMatchers("/", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**")
+                                .permitAll()
+                                .requestMatchers(
+                                        "/api/v1/users/sign-up",
+                                        "/api/v1/users/sign-in/**",
+                                        "/api/v1/users/reissue",
+                                        "/api/v1/users/status",
+                                        "/api/v1/press/**",
+                                        "/actuator/**"
+                                ).permitAll()
+                                .anyRequest().authenticated()
+                )
+                .addFilterBefore(new JwtFilter(jwtTokenUtil),
+                        UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtExceptionFilter, JwtFilter.class);
 
         return http.build();
     }
