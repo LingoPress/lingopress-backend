@@ -8,6 +8,8 @@ server:
 
 
 spring:
+  application:
+    name: lingopress
   jpa:
     hibernate:
       ddl-auto: update
@@ -50,3 +52,10 @@ greeting:
 springdoc:
   api-docs:
     enabled: true
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus, health, info, env, beans, configprops, loggers, heapdump, threaddump, metrics, httptrace, mappings, scheduledtasks, jolokia, jolokia"
