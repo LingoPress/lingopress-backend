@@ -18,6 +18,7 @@ public class WordController {
 
     private final WordService wordService;
 
+    @Operation(summary = "단어 등록")
     @PostMapping("/need-to-learn")
     public DataResponseDto<WordToLearnResponse> enrollWordToLearn(
             @RequestBody WordToLearnRequest request
@@ -25,6 +26,7 @@ public class WordController {
         return DataResponseDto.of(wordService.enrollWordToLearn(request));
     }
 
+    @Operation(summary = "특정 프레스의 학습할 단어 목록 조회")
     @GetMapping("/need-to-learn/{pressId}")
     public DataResponseDto<List<WordToLearnResponse>> getWordToLearn(
             @PathVariable Long pressId
@@ -32,7 +34,7 @@ public class WordController {
         return DataResponseDto.of(wordService.getWordToLearn(pressId));
     }
 
-    @Operation(summary = "내가 학습할 단어 목록 조회")
+    @Operation(summary = "내가 학습할 단어 목록 전체 조회")
     @GetMapping("/need-to-learn")
     public DataResponseDto<List<WordToLearnResponse>> getMyWords() {
         return DataResponseDto.of(wordService.getWordToLearn());
