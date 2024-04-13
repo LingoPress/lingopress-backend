@@ -16,13 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/press")
@@ -33,47 +27,43 @@ public class PressController {
     private final LearnPressService learnPressService;
     private final LearnedPressContentLineService learnedPressContentLineService;
 
-    @GetMapping("/status")
-    public String status() {
-        return "OK";
-    }
 
     @Operation(summary = "프레스 전체 리스트 조회")
     @GetMapping("")
     public DataResponseDto<SliceResponseDto<PressResponse>> getPressList(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "5") int size
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
         return DataResponseDto.of(
-            SliceResponseDto.from(pressService.getPressList(pageable)));
+                SliceResponseDto.from(pressService.getPressList(pageable)));
     }
 
     @Operation(summary = "프레스 상세 조회")
     @GetMapping("/{pressId}")
     public DataResponseDto<PressContentResponse> getPressDetail(
-        @PathVariable String pressId) {
+            @PathVariable String pressId) {
         return DataResponseDto.of(pressService.getPressDetail(Long.parseLong(pressId)));
     }
 
     @Operation(summary = "프레스 한 줄 번역 정답 유무 전송")
     @PostMapping("/translate")
     public DataResponseDto<PressContentLineResponse> checkPressContentLine(
-        @Valid @RequestBody TranslateContentLineRequest request) {
+            @Valid @RequestBody TranslateContentLineRequest request) {
         return DataResponseDto.of(learnedPressContentLineService.checkPressContentLine(request));
     }
 
     @Operation(summary = "내가 번역한 프레스 리스트 조회")
     @GetMapping("/learned")
     public DataResponseDto<SliceResponseDto<LearnedPressResponse>> getLearnedPressList(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "5") int size
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
         return DataResponseDto.of(
-            SliceResponseDto.from(learnPressService.getLearnedPressList(pageable)));
+                SliceResponseDto.from(learnPressService.getLearnedPressList(pageable)));
     }
 
 }
