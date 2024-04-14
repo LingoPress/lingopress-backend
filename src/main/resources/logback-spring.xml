@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration scan="true" scanPeriod="60 seconds">
+    <!-- 로그 패턴에 색상 적용 %clr(pattern){color} https://logback.qos.ch/manual/layouts.html#coloring -->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+
+    <timestamp key="BY_DATE" datePattern="yyyy-MM-dd"/>
+    <!-- 로깅 테마 (색상 놀이) -->
+    <property name="CONSOLE_LOG_PATTERN"
+              value="[%d{yyyy-MM-dd HH:mm:ss}:%-3relative]  %clr(%-5level) %clr(${PID:-}){magenta} %clr(---){faint} %clr([%15.15thread]){faint} %clr(%-40.40logger{36}){cyan} %clr(:){faint} %msg%n"/>
+    <!-- file 로깅 테마 -->
+    <property name="FILE_LOG_PATTERN"
+              value="[%d{yyyy-MM-dd HH:mm:ss}:%-3relative] %-5level ${PID:-} --- [%15.15thread] %-40.40logger{36} : %msg%n"/>
+    <!-- 로그파일의 위치 정의 -->
+    <property name="LOG_PATH" value="/var/log/lingopress"/>
+
+    <springProfile name="dev">
+        <include resource="console-appender.xml"/>
+        <!-- 로컬 서버에서는 appender를 통해 콘솔에 출력-->
+        <root level="INFO">
+            <!-- ref="appender name(CONSOLE) 지정" -->
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <!-- 로컬이 아닌 서버에서는(즉 배포 서버 set1, set2) appender를 통해 파일에 저장-->
+    <springProfile name="!dev">
+        <include resource="file-info-appender.xml"/>
+        <include resource="file-error-appender.xml"/>
+
+        <root level="INFO">
+            <appender-ref ref="FILE-INFO"/>
+            <appender-ref ref="FILE-ERROR"/>
+        </root>
+    </springProfile>
+
+</configuration>
