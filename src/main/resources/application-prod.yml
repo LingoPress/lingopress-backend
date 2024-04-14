@@ -58,7 +58,9 @@ management:
       exposure:
         include: "prometheus, health, info, env, beans, configprops, loggers, heapdump, threaddump, metrics, httptrace, mappings, scheduledtasks, jolokia, jolokia"
 
-
-logging:
-  discord:
-    webhook-url: ${DISCORD_WEBHOOK_URL}
+sentry:
+  dsn: ${sentry-dsn}
+  # Set traces-sample-rate to 1.0 to capture 100% of transactions for performance monitoring.
+  # We recommend adjusting this value in production.
+  traces-sample-rate: 1.0
+  environment: production
