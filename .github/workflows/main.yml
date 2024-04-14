@@ -69,7 +69,7 @@ jobs:
             sudo docker run --rm -p 8080:8080 --name lingopress-backend \
                     --network lingopress_network \
                     -d kidchanghyun/lingopress-backend \
-                    -v /home/ubuntu/lingopress/log:/var/log/lingopress \
+                    -v /home/ubuntu/lingopress/log:/var/log \
                     --DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }} \
                     --DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }} \
                     --CHATGPT_KEY=${{ secrets.CHATGPT_KEY }} \
