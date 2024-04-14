@@ -11,7 +11,7 @@
     <property name="FILE_LOG_PATTERN"
               value="[%d{yyyy-MM-dd HH:mm:ss}:%-3relative] %-5level ${PID:-} --- [%15.15thread] %-40.40logger{36} : %msg%n"/>
     <!-- 로그파일의 위치 정의 -->
-    <property name="LOG_PATH" value="/var/log/lingopress"/>
+    <property name="LOG_PATH" value="/var/log"/>
 
     <springProfile name="dev">
         <include resource="console-appender.xml"/>
