@@ -73,7 +73,7 @@ jobs:
                     --DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }} \
                     --DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }} \
                     --CHATGPT_KEY=${{ secrets.CHATGPT_KEY }} \
-                    --JWT_SECRET=${{ secrets.JWT_SECRET }}
+                    --JWT_SECRET=${{ secrets.JWT_SECRET }} \
                     --SENTRY_DSN=${{ secrets.SENTRY_DSN }}
             sudo docker image prune -f
 
