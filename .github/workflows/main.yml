@@ -48,8 +48,8 @@ jobs:
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/lingopress-backend .
           docker push ${{ secrets.DOCKER_USERNAME }}/lingopress-backend
+      
 
-          
       ## deploy to production
       - name: Deploy to prod
         uses: appleboy/ssh-action@master
@@ -69,6 +69,7 @@ jobs:
             sudo docker run --rm -p 8080:8080 --name lingopress-backend \
                     --network lingopress_network \
                     -d kidchanghyun/lingopress-backend \
+                    -v /home/ubuntu/lingopress/log:/var/log/lingopress \
                     --DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }} \
                     --DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }} \
                     --CHATGPT_KEY=${{ secrets.CHATGPT_KEY }} \
