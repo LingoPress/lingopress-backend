@@ -45,7 +45,8 @@ public class SecurityConfig {
                                         "/api/v1/users/reissue",
                                         "/api/v1/users/status",
                                         "/api/v1/press/**",
-                                        "/actuator/**"
+                                        "/actuator/**",
+                                        "/api/v1/users/error-occur"
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 )

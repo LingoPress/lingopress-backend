@@ -1,5 +1,7 @@
 package com.kidchang.lingopress.user;
 
+import com.kidchang.lingopress._base.constant.Code;
+import com.kidchang.lingopress._base.exception.GeneralException;
 import com.kidchang.lingopress._base.response.DataResponseDto;
 import com.kidchang.lingopress.jwt.dto.request.JwtRequest;
 import com.kidchang.lingopress.jwt.dto.response.JwtResponse;
@@ -20,6 +22,11 @@ public class UserController {
     @GetMapping("/status")
     public String status(@Value("${greeting.message}") String message) {
         return message;
+    }
+
+    @GetMapping("/error-occur")
+    public String errorOccur() {
+        throw new GeneralException(Code.ERROR_OCCURRED_TEST);
     }
 
     @Operation(summary = "회원가입")

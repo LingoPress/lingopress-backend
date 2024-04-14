@@ -29,8 +29,6 @@ spring:
     url: jdbc:postgresql://lingopress-db:5432/lingopress
     hikari:
       max-lifetime: 25800 # Possibly consider using a shorter maxLifetime value. 오류로 인해 추가
-
-
 jwt:
   secret: ${jwt-secret}
 
@@ -59,3 +57,10 @@ management:
     web:
       exposure:
         include: "prometheus, health, info, env, beans, configprops, loggers, heapdump, threaddump, metrics, httptrace, mappings, scheduledtasks, jolokia, jolokia"
+
+sentry:
+  dsn: ${sentry-dsn}
+  # Set traces-sample-rate to 1.0 to capture 100% of transactions for performance monitoring.
+  # We recommend adjusting this value in production.
+  traces-sample-rate: 1.0
+  environment: production
