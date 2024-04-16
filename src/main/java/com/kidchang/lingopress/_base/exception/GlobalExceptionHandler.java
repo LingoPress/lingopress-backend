@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     protected ResponseEntity<Object> handleBusinessException(BusinessException e) {
         log.error(e.toString(), e);
-        return handleExceptionInternal(e.getErrorCode(), e);
+        return handleExceptionBusiness(e.getErrorCode(), e);
     }
 
 
@@ -84,4 +84,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(errorCode.getHttpStatus())
                 .body(ErrorResponseDto.of(errorCode, message));
     }
+
+    private ResponseEntity<Object> handleExceptionBusiness(Code errorCode, Exception e) {
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(ErrorResponseDto.of(errorCode, e));
+    }
+
 }
