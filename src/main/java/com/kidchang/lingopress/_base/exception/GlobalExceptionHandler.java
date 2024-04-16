@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
         return handleExceptionGlobal(Code.QUERY_PARAMETER_REQUIRED, e);
     }
 
-    // @Valid 유효성 검증에 실패할 경우
+    // @Valid 유효성 검증에 실패할 경우 (클라이언트 입력의 유효성 검증)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<Object> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException e) {
@@ -56,12 +56,12 @@ public class GlobalExceptionHandler {
                 e.getBindingResult().getFieldErrors().get(0).getDefaultMessage());
     }
 
-    // entity 관련 예외 처리
+    // entity 관련 예외 처리 (데이터베이스 작업 중에 발생하는 오류)
     @ExceptionHandler(DataIntegrityViolationException.class)
     protected ResponseEntity<Object> handleDataIntegrityViolationExceptionException(
             DataIntegrityViolationException e) {
         log.error(e.toString(), e);
-        return handleExceptionGlobal(Code.INVALID_INPUT_VALUE, e, e.getLocalizedMessage());
+        return handleExceptionGlobal(Code.INTEGRITY_VALIDATION_ERROR, e, e.getLocalizedMessage());
     }
 
 
@@ -69,7 +69,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {Exception.class, RuntimeException.class, SQLException.class})
     protected ResponseEntity<Object> handleException(Exception e) {
         log.error(e.toString(), e);
-
         return handleExceptionGlobal(Code.INTERNAL_ERROR, e);
     }
 
