@@ -1,23 +1,13 @@
 package com.kidchang.lingopress.jwt;
 
 import com.kidchang.lingopress._base.constant.Code;
-import com.kidchang.lingopress._base.exception.GeneralException;
+import com.kidchang.lingopress._base.exception.BusinessException;
 import com.kidchang.lingopress.jwt.dto.response.JwtResponse;
 import com.kidchang.lingopress.user.User;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import java.security.Key;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,6 +16,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
+import java.security.Key;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
 
 @Component
 @Slf4j
@@ -43,25 +38,25 @@ public class JwtTokenUtil {
     public String createAccessToken(User user, long expireTimeMs) {
 
         return Jwts.builder()
-            .setSubject(user.getId().toString())
-            .claim("nickname", user.getNickname())
-            .claim("token_type", "access")
-            .claim("role", user.getRole())
-            .setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new Date(System.currentTimeMillis() + expireTimeMs))
-            .signWith(secretKey, SignatureAlgorithm.HS256)
-            .compact();
+                .setSubject(user.getId().toString())
+                .claim("nickname", user.getNickname())
+                .claim("token_type", "access")
+                .claim("role", user.getRole())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expireTimeMs))
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .compact();
     }
 
     public String createRefreshToken(User user, long expireTimeMs) {
 
         return Jwts.builder()
-            .setSubject(user.getId().toString())
-            .claim("token_type", "refresh")
-            .setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new Date(System.currentTimeMillis() + expireTimeMs))
-            .signWith(secretKey, SignatureAlgorithm.HS256)
-            .compact();
+                .setSubject(user.getId().toString())
+                .claim("token_type", "refresh")
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expireTimeMs))
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .compact();
     }
 
     public JwtResponse generateJwt(User user) {
@@ -71,26 +66,26 @@ public class JwtTokenUtil {
         String refreshToken = createRefreshToken(user, REFRESH_TOKEN_EXPIRE_TIME_MS);
 
         return JwtResponse.builder()
-            .accessToken(accessToken)
-            .refreshToken(refreshToken)
-            .accessTokenExpiresIn(ACCESS_TOKEN_EXPIRE_TIME_MS)
-            .build();
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .accessTokenExpiresIn(ACCESS_TOKEN_EXPIRE_TIME_MS)
+                .build();
     }
 
     public Authentication getAuthentication(String accessToken) {
         Claims claims = extractClaims(accessToken);
 
         if (claims.get("role") == null) {
-            throw new GeneralException(Code.UNAUTHORIZED);
+            throw new BusinessException(Code.UNAUTHORIZED);
         }
 
         Collection<? extends GrantedAuthority> authorities =
-            Arrays.stream(claims.get("role").toString().split(","))
-                .map(SimpleGrantedAuthority::new)
-                .toList();
+                Arrays.stream(claims.get("role").toString().split(","))
+                        .map(SimpleGrantedAuthority::new)
+                        .toList();
 
         UserDetails principal = new org.springframework.security.core.userdetails.User(
-            claims.getSubject(), "", authorities);
+                claims.getSubject(), "", authorities);
 
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
@@ -102,7 +97,7 @@ public class JwtTokenUtil {
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey).build()
-                .parseClaimsJws(token);
+                    .parseClaimsJws(token);
 
             if (!claims.getBody().get("token_type").equals("access")) {
                 throw new JwtException(Code.NOT_ACCESS_TOKEN.getMessage());
@@ -123,17 +118,17 @@ public class JwtTokenUtil {
     public boolean ValidateRefreshToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey).build()
-                .parseClaimsJws(token);
+                    .parseClaimsJws(token);
             if (!claims.getBody().get("token_type").equals("refresh")) {
                 throw new JwtException(Code.NOT_REFRESH_TOKEN.getMessage());
             }
             return !claims.getBody().getExpiration().before(new Date());
         } catch (ExpiredJwtException e) {
-            throw new GeneralException(Code.EXPIRED_REFRESH_TOKEN);
+            throw new BusinessException(Code.EXPIRED_REFRESH_TOKEN);
         } catch (SignatureException e) {
-            throw new GeneralException(Code.NOT_SIGNATURE_TOKEN);
+            throw new BusinessException(Code.NOT_SIGNATURE_TOKEN);
         } catch (MalformedJwtException e) {
-            throw new GeneralException(Code.MALFORMED_TOKEN);
+            throw new BusinessException(Code.MALFORMED_TOKEN);
         }
 
 
@@ -142,7 +137,7 @@ public class JwtTokenUtil {
     private Claims extractClaims(String accessToken) {
         try {
             return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(accessToken)
-                .getBody();
+                    .getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }

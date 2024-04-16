@@ -20,8 +20,8 @@ import java.sql.SQLException;
 public class GlobalExceptionHandler {
 
     // Code 예외 처리
-    @ExceptionHandler(GeneralException.class)
-    protected ResponseEntity<Object> handleBusinessException(GeneralException e) {
+    @ExceptionHandler(BusinessException.class)
+    protected ResponseEntity<Object> handleBusinessException(BusinessException e) {
         log.error(e.toString(), e);
         return handleExceptionInternal(e.getErrorCode(), e);
     }

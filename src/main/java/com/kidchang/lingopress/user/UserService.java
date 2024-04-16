@@ -1,7 +1,7 @@
 package com.kidchang.lingopress.user;
 
 import com.kidchang.lingopress._base.constant.Code;
-import com.kidchang.lingopress._base.exception.GeneralException;
+import com.kidchang.lingopress._base.exception.BusinessException;
 import com.kidchang.lingopress.jwt.JwtService;
 import com.kidchang.lingopress.jwt.dto.request.JwtRequest;
 import com.kidchang.lingopress.jwt.dto.response.JwtResponse;
@@ -24,7 +24,7 @@ public class UserService {
 
     public JwtResponse createUser(SignupRequest signupRequest) {
         if (userRepository.existsByUsername(signupRequest.username())) {
-            throw new GeneralException(Code.DUPLICATED_USER);
+            throw new BusinessException(Code.DUPLICATED_USER);
         }
 
         //
@@ -41,11 +41,11 @@ public class UserService {
     public JwtResponse signIn(SigninRequest signinRequest) {
         User user = userRepository.findByUsername(signinRequest.username());
         if (user == null) {
-            throw new GeneralException(Code.NOT_FOUND_USER);
+            throw new BusinessException(Code.NOT_FOUND_USER);
         }
         if (!passwordEncoder.matches(signinRequest.password(), user.getPassword())
         ) {
-            throw new GeneralException(Code.INVALID_PASSWORD);
+            throw new BusinessException(Code.INVALID_PASSWORD);
         }
 
         JwtResponse jwtResponse = jwtService.issueJwt(user);

@@ -1,7 +1,7 @@
 package com.kidchang.lingopress.jwt;
 
 import com.kidchang.lingopress._base.constant.Code;
-import com.kidchang.lingopress._base.exception.GeneralException;
+import com.kidchang.lingopress._base.exception.BusinessException;
 import com.kidchang.lingopress.jwt.dto.request.JwtRequest;
 import com.kidchang.lingopress.jwt.dto.response.JwtResponse;
 import com.kidchang.lingopress.user.User;
@@ -28,9 +28,9 @@ public class JwtService {
             refreshToken.update(jwtResponse.refreshToken());
         } else { // 회원가입
             RefreshToken refreshToken = RefreshToken.builder()
-                .refreshToken(jwtResponse.refreshToken())
-                .user(user)
-                .build();
+                    .refreshToken(jwtResponse.refreshToken())
+                    .user(user)
+                    .build();
             refreshTokenRepository.save(refreshToken);
         }
 
@@ -39,17 +39,17 @@ public class JwtService {
 
     public JwtResponse reissueJwt(JwtRequest jwtRequest) {
         if (!jwtTokenUtil.ValidateRefreshToken(jwtRequest.refreshToken())) {
-            throw new GeneralException(Code.INVALID_REFRESH_TOKEN);
+            throw new BusinessException(Code.INVALID_REFRESH_TOKEN);
         }
 
         Authentication authentication = jwtTokenUtil.getAuthentication(jwtRequest.accessToken());
         Long userId = Long.parseLong(authentication.getName());
 
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new GeneralException(Code.NOT_FOUND_USER));
+                .orElseThrow(() -> new BusinessException(Code.NOT_FOUND_USER));
         RefreshToken refreshToken = refreshTokenRepository.findByUser(user);
         if (!refreshToken.getRefreshToken().equals(jwtRequest.refreshToken())) {
-            throw new GeneralException(Code.INVALID_REFRESH_TOKEN);
+            throw new BusinessException(Code.INVALID_REFRESH_TOKEN);
         }
 
         JwtResponse jwtResponse = jwtTokenUtil.generateJwt(user);
