@@ -9,5 +9,6 @@ import lombok.Data;
 public class LingoGptRequest {
 
     private String original_text;
+    private String translated_text;
     private String word;
 }

@@ -26,6 +26,13 @@ public class GlobalExceptionHandler {
         return handleExceptionBusiness(e.getErrorCode(), e);
     }
 
+    // Code 예외 처리
+    @ExceptionHandler(GlobalException.class)
+    protected ResponseEntity<Object> handleGlobalException(GlobalException e) {
+        log.error(e.toString(), e);
+        return handleExceptionGlobal(e.getErrorCode(), e);
+    }
+
 
     // 지원하지 않는 HTTP method를 호출할 경우
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)

@@ -42,6 +42,7 @@ public class WordService {
         TranslateTextResponse translateTextResponse = translateService.translateWithUsageTracker(
                 LingoGptRequest.builder()
                         .original_text(request.originalText())
+                        .translated_text(request.translatedText())
                         .word(request.word())
                         .build());
 
