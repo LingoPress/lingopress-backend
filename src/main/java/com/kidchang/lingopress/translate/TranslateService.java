@@ -60,7 +60,7 @@ public class TranslateService {
 
         // 글자수가 너무 길면 예외 발생시키기
         if (text.getOriginal_text().length() > 1200) {
-            throw new BusinessException(Code.TRANSLATION_TEXT_TOO_LONG);
+            throw new GlobalException(Code.TRANSLATION_TEXT_TOO_LONG);
         }
 
         // 3. 번역하기
