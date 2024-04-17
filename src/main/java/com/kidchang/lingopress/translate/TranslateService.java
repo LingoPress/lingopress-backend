@@ -2,6 +2,7 @@ package com.kidchang.lingopress.translate;
 
 import com.kidchang.lingopress._base.constant.Code;
 import com.kidchang.lingopress._base.exception.BusinessException;
+import com.kidchang.lingopress._base.exception.GlobalException;
 import com.kidchang.lingopress._base.utils.SecurityUtil;
 import com.kidchang.lingopress.client.LingoGptClient;
 import com.kidchang.lingopress.translate.dto.request.LingoGptRequest;
@@ -32,7 +33,7 @@ public class TranslateService {
                     .build();
 
         } catch (Exception e) {
-            throw new BusinessException(Code.TRANSLATION_ERROR, e);
+            throw new GlobalException(Code.TRANSLATION_ERROR, e);
         }
     }
 
