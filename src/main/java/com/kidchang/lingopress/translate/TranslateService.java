@@ -1,7 +1,7 @@
 package com.kidchang.lingopress.translate;
 
 import com.kidchang.lingopress._base.constant.Code;
-import com.kidchang.lingopress._base.exception.GeneralException;
+import com.kidchang.lingopress._base.exception.BusinessException;
 import com.kidchang.lingopress._base.utils.SecurityUtil;
 import com.kidchang.lingopress.client.LingoGptClient;
 import com.kidchang.lingopress.translate.dto.request.LingoGptRequest;
@@ -32,7 +32,7 @@ public class TranslateService {
                     .build();
 
         } catch (Exception e) {
-            throw new GeneralException(Code.TRANSLATION_ERROR, e);
+            throw new BusinessException(Code.TRANSLATION_ERROR, e);
         }
     }
 
@@ -54,12 +54,12 @@ public class TranslateService {
 
         // 2. 번역 횟수가 20회가 넘으면 예외 발생시키기
         if (tracker.getRequestCount() >= 50) {
-            throw new GeneralException(Code.TRANSLATION_LIMIT_EXCEEDED);
+            throw new BusinessException(Code.TRANSLATION_LIMIT_EXCEEDED);
         }
 
         // 글자수가 너무 길면 예외 발생시키기
         if (text.getOriginal_text().length() > 1200) {
-            throw new GeneralException(Code.TRANSLATION_TEXT_TOO_LONG);
+            throw new BusinessException(Code.TRANSLATION_TEXT_TOO_LONG);
         }
 
         // 3. 번역하기

@@ -1,7 +1,7 @@
 package com.kidchang.lingopress.press.service;
 
 import com.kidchang.lingopress._base.constant.Code;
-import com.kidchang.lingopress._base.exception.GeneralException;
+import com.kidchang.lingopress._base.exception.BusinessException;
 import com.kidchang.lingopress._base.utils.SecurityUtil;
 import com.kidchang.lingopress.press.PressRepository;
 import com.kidchang.lingopress.press.dto.request.TranslateContentLineRequest;
@@ -36,17 +36,17 @@ public class LearnedPressContentLineService {
         // 1. User 가져오기
         Long userId = SecurityUtil.getUserId();
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new GeneralException(Code.NOT_FOUND_USER));
+                .orElseThrow(() -> new BusinessException(Code.NOT_FOUND_USER));
 
         // 2. Press 가져오기
         Press press = pressRepository.findById(pressId)
-                .orElseThrow(() -> new GeneralException(Code.PRESS_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(Code.PRESS_NOT_FOUND));
 
         // 3. PressContentLine 가져오기
         PressContentLine pressContentLine = pressContentLineRepository.findByPressIdAndLineNumber(
                         pressId,
                         request.contentLineNumber())
-                .orElseThrow(() -> new GeneralException(Code.PRESS_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(Code.PRESS_NOT_FOUND));
 
         // 4. LearnedPressLine 가져오기
         LearnedPress learnedPress = learnPressService.findOrCreateLearnedPress(user, press);
