@@ -3,6 +3,7 @@ package com.kidchang.lingopress.press.service;
 import com.kidchang.lingopress._base.constant.Code;
 import com.kidchang.lingopress._base.exception.BusinessException;
 import com.kidchang.lingopress._base.utils.SecurityUtil;
+import com.kidchang.lingopress.learningRecord.LearningRecordService;
 import com.kidchang.lingopress.press.PressRepository;
 import com.kidchang.lingopress.press.dto.request.TranslateContentLineMemoRequest;
 import com.kidchang.lingopress.press.dto.request.TranslateContentLineRequest;
@@ -20,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -30,6 +33,7 @@ public class LearnedPressContentLineService {
     private final LearnPressService learnPressService;
     private final LearnedPressContentLineRepository learnedPressContentLineRepository;
     private final PressContentLineRepository pressContentLineRepository;
+    private final LearningRecordService learningRecordService;
 
     @Transactional
     public PressContentLineResponse checkPressContentLine(TranslateContentLineRequest request) {
@@ -56,6 +60,14 @@ public class LearnedPressContentLineService {
         LearnedPressContentLine learnedPressContentLine = learnedPressContentLineRepository
                 .findByLearnedPressAndPressContentLine(learnedPress, pressContentLine)
                 .orElse(null);
+
+        // 학습한 문장수 카운트
+        // 만약 LearnedPressContentLine이 없거나, isCorrect가 null이라면(메모만 이용), 번역한 문장 수를 증가시킨다.
+        if (learnedPressContentLine == null || learnedPressContentLine.getIsCorrect() == null) {
+            LocalDate date = LocalDate.now();
+            learningRecordService.increaseLearningRecord(userId, date);
+        }
+
         if (learnedPressContentLine == null) {
             learnedPressContentLine = LearnedPressContentLine.builder()
                     .learnedPress(learnedPress)
