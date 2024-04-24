@@ -4,20 +4,21 @@ import com.kidchang.lingopress.press.dto.response.PressContentLineResponse;
 import com.kidchang.lingopress.press.entity.LearnedPress;
 import com.kidchang.lingopress.press.entity.LearnedPressContentLine;
 import com.kidchang.lingopress.press.entity.PressContentLine;
-import java.util.List;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface LearnedPressContentLineRepository extends
-    JpaRepository<LearnedPressContentLine, Integer> {
+        JpaRepository<LearnedPressContentLine, Integer> {
 
     Optional<LearnedPressContentLine> findByLearnedPressAndPressContentLine(
-        LearnedPress learnedPress,
-        PressContentLine pressContentLine);
+            LearnedPress learnedPress,
+            PressContentLine pressContentLine);
 
 // 내가 짠 코드
 //    @Query(
@@ -34,10 +35,10 @@ public interface LearnedPressContentLineRepository extends
 
     // gpt 수정 수정본
     @Query(
-        "SELECT new com.kidchang.lingopress.press.dto.response.PressContentLineResponse(pcl.id, pcl.lineNumber, lpcl.userTranslatedLine, pcl.translatedLineText, pcl.lineText, lpcl.isCorrect) "
-            + "FROM PressContentLine AS pcl "
-            + "LEFT OUTER JOIN LearnedPressContentLine AS lpcl ON lpcl.lineNumber = pcl.lineNumber AND lpcl.user.id = :userId AND lpcl.press.id = :pressId "
-            + "WHERE pcl.press.id = :pressId")
+            "SELECT new com.kidchang.lingopress.press.dto.response.PressContentLineResponse(pcl.id, pcl.lineNumber, lpcl.userTranslatedLine, pcl.translatedLineText, pcl.lineText, lpcl.isCorrect, lpcl.memo) "
+                    + "FROM PressContentLine AS pcl "
+                    + "LEFT OUTER JOIN LearnedPressContentLine AS lpcl ON lpcl.lineNumber = pcl.lineNumber AND lpcl.user.id = :userId AND lpcl.press.id = :pressId "
+                    + "WHERE pcl.press.id = :pressId")
     List<PressContentLineResponse> findByUserAndPressAndPressContent(@Param("userId") Long user,
-        @Param("pressId") Long pressId);
+                                                                     @Param("pressId") Long pressId);
 }
