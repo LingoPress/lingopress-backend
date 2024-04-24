@@ -1,7 +1,5 @@
 package com.kidchang.lingopress.learningRecord;
 
-import com.kidchang.lingopress._base.constant.Code;
-import com.kidchang.lingopress._base.exception.BusinessException;
 import com.kidchang.lingopress._base.utils.SecurityUtil;
 import com.kidchang.lingopress.learningRecord.dto.LearningRecordBetweenRequest;
 import com.kidchang.lingopress.learningRecord.dto.LearningRecordResponse;
@@ -10,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,8 +27,12 @@ public class LearningRecordService {
         // 요청한 아이디와 jwt 아이디가 다르면 에러
         LocalDate today = LocalDate.now();
         LearningRecord.LearningRecordId id = new LearningRecord.LearningRecordId(SecurityUtil.getUserId(), today);
-        LearningRecord record = learningRecordRepository.findLearningRecordById(id).orElseThrow(() -> new BusinessException(Code.NOT_FOUND_LEARNING_RECORD));
-        return LearningRecordResponse.from(record.getId().getUserId(), record.getLearningCount(), record.getId().getDate());
+        Optional<LearningRecord> record = learningRecordRepository.findLearningRecordById(id);
+        if (record.isEmpty()) {
+            return LearningRecordResponse.from(id.getUserId(), 0, today);
+        }
+        LearningRecord learningRecord = record.get();
+        return LearningRecordResponse.from(learningRecord.getId().getUserId(), learningRecord.getLearningCount(), learningRecord.getId().getDate());
     }
 
     public List<LearningRecordResponse> getLearningRecords(LearningRecordBetweenRequest learningRecordRequest) {
