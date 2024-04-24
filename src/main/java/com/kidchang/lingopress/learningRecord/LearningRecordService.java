@@ -3,12 +3,15 @@ package com.kidchang.lingopress.learningRecord;
 import com.kidchang.lingopress._base.constant.Code;
 import com.kidchang.lingopress._base.exception.BusinessException;
 import com.kidchang.lingopress._base.utils.SecurityUtil;
+import com.kidchang.lingopress.learningRecord.dto.LearningRecordBetweenRequest;
 import com.kidchang.lingopress.learningRecord.dto.LearningRecordRequest;
 import com.kidchang.lingopress.learningRecord.dto.LearningRecordResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +30,19 @@ public class LearningRecordService {
         LearningRecord.LearningRecordId id = new LearningRecord.LearningRecordId(SecurityUtil.getUserId(), learningRecordRequest.date());
         LearningRecord record = learningRecordRepository.findLearningRecordById(id).orElseThrow(() -> new BusinessException(Code.NOT_FOUND_LEARNING_RECORD));
         return LearningRecordResponse.from(record.getId().getUserId(), record.getLearningCount(), record.getId().getDate());
+    }
+
+    public List<LearningRecordResponse> getLearningRecords(LearningRecordBetweenRequest learningRecordRequest) {
+        // userId, date로 조회
+        // 요청한 아이디와 jwt 아이디가 다르면 에러
+        Long userId = SecurityUtil.getUserId();
+        LearningRecord.LearningRecordId id1 = new LearningRecord.LearningRecordId(userId, learningRecordRequest.startDate());
+        LearningRecord.LearningRecordId id2 = new LearningRecord.LearningRecordId(userId, learningRecordRequest.endDate());
+
+        List<LearningRecord> records = learningRecordRepository.findLearningRecordByIdBetween(id1, id2);
+        return records.stream()
+                .map(record -> LearningRecordResponse.from(record.getId().getUserId(), record.getLearningCount(), record.getId().getDate()))
+                .collect(Collectors.toList());
     }
 
     /**
