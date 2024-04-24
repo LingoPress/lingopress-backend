@@ -2,13 +2,7 @@ package com.kidchang.lingopress.press.entity;
 
 import com.kidchang.lingopress._base.entity.BaseTimeEntity;
 import com.kidchang.lingopress.user.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,10 +34,13 @@ public class LearnedPressContentLine extends BaseTimeEntity {
     private String userTranslatedLine;
     private Boolean isCorrect;
 
+    // 문장별메모 기능
+    private String memo;
+
     @Builder
     public LearnedPressContentLine(User user, LearnedPress learnedPress,
-        PressContentLine pressContentLine,
-        String userTranslatedLine, Boolean isCorrect, Integer lineNumber, Press press) {
+                                   PressContentLine pressContentLine,
+                                   String userTranslatedLine, Boolean isCorrect, Integer lineNumber, Press press, String memo) {
         this.user = user;
         this.learnedPress = learnedPress;
         this.pressContentLine = pressContentLine;
@@ -51,5 +48,6 @@ public class LearnedPressContentLine extends BaseTimeEntity {
         this.isCorrect = isCorrect;
         this.lineNumber = lineNumber;
         this.press = press;
+        this.memo = memo;
     }
 }
