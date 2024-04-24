@@ -55,7 +55,8 @@ public enum Code {
     private final String message;
 
     public String getMessage(Throwable throwable) {
-        return this.getMessage(this.getMessage(this.getMessage() + " - " + throwable.getMessage()));
+//        return this.getMessage() + " - " + throwable.getMessage();
+        return this.getMessage();
     }
 
     public String getMessage(String message) {
