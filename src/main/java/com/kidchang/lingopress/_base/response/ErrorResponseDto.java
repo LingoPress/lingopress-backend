@@ -13,7 +13,9 @@ public class ErrorResponseDto extends ResponseDto {
     }
 
     private ErrorResponseDto(Code errorCode, String message) {
-        super(errorCode.toString(), errorCode.getMessage() + " - " + message);
+        // super(errorCode.toString(), errorCode.getMessage() + " - " + message);
+        super(errorCode.toString(), errorCode.getMessage());
+
     }
 
     public static ErrorResponseDto from(Code errorCode) {

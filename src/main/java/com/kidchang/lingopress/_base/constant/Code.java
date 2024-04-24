@@ -40,10 +40,13 @@ public enum Code {
     DUPLICATED_USER(HttpStatus.CONFLICT, "이미 존재하는 유저입니다."),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
     AUTH_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "인증 정보를 찾을 수 없습니다."),
+    NOT_ACCESSIBLE_USER(HttpStatus.FORBIDDEN, "접근 권한이 없는 사용자입니다."),
 
 
     // Press
     PRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 뉴스를 찾을 수 없습니다."),
+
+    NOT_FOUND_LEARNING_RECORD(HttpStatus.NOT_FOUND, "학습 기록을 찾을 수 없습니다."),
 
     // Translate: Global
     TRANSLATION_ERROR(HttpStatus.BAD_REQUEST, "번역 에러가 발생하였습니다."),
@@ -55,7 +58,8 @@ public enum Code {
     private final String message;
 
     public String getMessage(Throwable throwable) {
-        return this.getMessage(this.getMessage(this.getMessage() + " - " + throwable.getMessage()));
+//        return this.getMessage() + " - " + throwable.getMessage();
+        return this.getMessage();
     }
 
     public String getMessage(String message) {

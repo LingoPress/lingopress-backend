@@ -2,6 +2,7 @@ package com.kidchang.lingopress.press;
 
 import com.kidchang.lingopress._base.response.DataResponseDto;
 import com.kidchang.lingopress._base.response.SliceResponseDto;
+import com.kidchang.lingopress.press.dto.request.TranslateContentLineMemoRequest;
 import com.kidchang.lingopress.press.dto.request.TranslateContentLineRequest;
 import com.kidchang.lingopress.press.dto.response.LearnedPressResponse;
 import com.kidchang.lingopress.press.dto.response.PressContentLineResponse;
@@ -52,6 +53,13 @@ public class PressController {
     public DataResponseDto<PressContentLineResponse> checkPressContentLine(
             @Valid @RequestBody TranslateContentLineRequest request) {
         return DataResponseDto.of(learnedPressContentLineService.checkPressContentLine(request));
+    }
+
+    @Operation(summary = "프레스 한 줄 메모 저장")
+    @PostMapping("/memo")
+    public DataResponseDto<PressContentLineResponse> writePressContentLineMemo(
+            @Valid @RequestBody TranslateContentLineMemoRequest request) {
+        return DataResponseDto.of(learnedPressContentLineService.writePressContentLineMemo(request));
     }
 
     @Operation(summary = "내가 번역한 프레스 리스트 조회")
