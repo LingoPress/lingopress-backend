@@ -8,6 +8,8 @@ import com.kidchang.lingopress.learningRecord.dto.LearningRecordResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 @RequiredArgsConstructor
 public class LearningRecordService {
@@ -27,5 +29,25 @@ public class LearningRecordService {
         return LearningRecordResponse.from(record.getId().getUserId(), record.getLearningCount(), record.getId().getDate());
     }
 
+    /**
+     * learningRecord에 학습 기록 저장 & 업데이트
+     * 해석이 맞든 틀리든 카운트
+     */
+    public LearningRecord increaseLearningRecord(long userId, LocalDate date) {
+        // 오늘자 기록이 없으면, 새로 생성
+        // 오늘자 기록이 있으면, 업데이트
+        LearningRecord.LearningRecordId id = new LearningRecord.LearningRecordId(userId, date);
+        LearningRecord learningRecord = learningRecordRepository.findLearningRecordById(id)
+                .orElseGet(() -> {
+                    LearningRecord newLearningRecord = LearningRecord.builder()
+                            .userId(userId)
+                            .date(date)
+                            .build();
+                    return learningRecordRepository.save(newLearningRecord);
+                });
+
+        learningRecord.increaseLearningCount();
+        return learningRecordRepository.save(learningRecord);
+    }
 
 }
