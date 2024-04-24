@@ -48,7 +48,7 @@ public class LearnedPressContentLineService {
                         request.contentLineNumber())
                 .orElseThrow(() -> new BusinessException(Code.PRESS_NOT_FOUND));
 
-        // 4. LearnedPressLine 가져오기
+        // 4. LearnedPress 가져오기
         LearnedPress learnedPress = learnPressService.findOrCreateLearnedPress(user, press);
 
         // 5. 기존에 LearnedPressContentLine 있는지 확인
