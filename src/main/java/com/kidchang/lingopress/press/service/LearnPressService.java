@@ -37,7 +37,7 @@ public class LearnPressService {
 
     public Slice<LearnedPressResponse> getLearnedPressList(Pageable pageable) {
         Long userId = SecurityUtil.getUserId();
-        Slice<LearnedPress> pressSlice = learnedPressRepository.findByUserId(userId, pageable);
+        Slice<LearnedPress> pressSlice = learnedPressRepository.findByUserIdOrderByUpdatedAtDesc(userId, pageable);
         Slice<LearnedPressResponse> learnedPressResponses = pressSlice.map(
                 LearnedPressResponse::from);
         return learnedPressResponses;
