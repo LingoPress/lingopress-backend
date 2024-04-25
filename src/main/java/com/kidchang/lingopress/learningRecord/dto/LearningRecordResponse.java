@@ -1,10 +1,13 @@
 package com.kidchang.lingopress.learningRecord.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDate;
 
 public record LearningRecordResponse(
         long userId,
-        int learningCount,
+        int count,
+        @JsonFormat(pattern = "yyyy/MM/dd")
         LocalDate date
 ) {
     public static LearningRecordResponse from(long userId, int learningCount, LocalDate date) {
