@@ -2,12 +2,7 @@ package com.kidchang.lingopress.user;
 
 import com.kidchang.lingopress._base.entity.BaseTimeEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,14 +27,26 @@ public class User extends BaseTimeEntity {
     // 이름
     private String nickname;
     private String password;
+    private String email;
+
+    @Schema(description = "ROLE", example = "ROLE_USER")
     private String role;
 
+    // provider : google이 들어감
+    private String provider;
+
+    // providerId : 구글 로그인 한 유저의 고유 ID가 들어감
+    private String providerId;
+
     @Builder
-    public User(String username, String nickname, String password, String role) {
+    public User(String username, String nickname, String password, String role, String provider, String providerId, String email) {
         this.username = username;
         this.nickname = nickname;
         this.password = password;
         this.role = role;
+        this.provider = provider;
+        this.providerId = providerId;
+        this.email = email;
     }
 
 }

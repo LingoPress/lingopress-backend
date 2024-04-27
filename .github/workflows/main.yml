@@ -74,7 +74,8 @@ jobs:
                     --DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }} \
                     --CHATGPT_KEY=${{ secrets.CHATGPT_KEY }} \
                     --JWT_SECRET=${{ secrets.JWT_SECRET }} \
-                    --SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+                    --SENTRY_DSN=${{ secrets.SENTRY_DSN }} \
+                    --GOOGLE_SECRET=${{ secrets.GOOGLE_SECRET }}
             sudo docker image prune -f
 
       - name: Discord Webhook Action
