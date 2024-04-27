@@ -5,8 +5,6 @@ import com.kidchang.lingopress._base.exception.BusinessException;
 import com.kidchang.lingopress._base.response.DataResponseDto;
 import com.kidchang.lingopress.jwt.dto.request.JwtRequest;
 import com.kidchang.lingopress.jwt.dto.response.JwtResponse;
-import com.kidchang.lingopress.user.dto.request.SigninRequest;
-import com.kidchang.lingopress.user.dto.request.SignupRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +17,14 @@ public class UserController {
 
     private final UserService userService;
 
+    @Value("${oauth2.google.client.id}")
+    private String googleClientId;
+    @Value("${oauth2.google.client.secret}")
+    private String googleClientSecret;
+
+    @Value("${oauth2.google.redirect-uri}")
+    private String googleRedirectUrl;
+
     @GetMapping("/status")
     public String status(@Value("${greeting.message}") String message) {
         return message;
@@ -29,23 +35,25 @@ public class UserController {
         throw new BusinessException(Code.ERROR_OCCURRED_TEST);
     }
 
-    @Operation(summary = "회원가입")
-    @PostMapping("/sign-up")
-    public DataResponseDto<JwtResponse> createUser(@RequestBody SignupRequest signupRequest) {
-
-        return DataResponseDto.of(userService.createUser(signupRequest));
-    }
-
-    @Operation(summary = "로그인")
-    @PostMapping("/sign-in")
-    public DataResponseDto<JwtResponse> signIn(@RequestBody SigninRequest signinRequest) {
-        return DataResponseDto.of(userService.signIn(signinRequest));
-    }
-
     @Operation(summary = "토큰 재발급")
     @PostMapping("/reissue")
     public DataResponseDto<JwtResponse> reissue(@RequestBody JwtRequest jwtRequest) {
         return DataResponseDto.of(userService.reissue(jwtRequest));
     }
+
+    @Operation(summary = "구글 로그인 페이지로 이동")
+    @PostMapping("/oauth2/google")
+    public DataResponseDto<String> loginUrlGoogle(@Value("${oauth2.google.redirect-uri}") String redirectUrl
+    ) {
+        return DataResponseDto.of("https://accounts.google.com/o/oauth2/auth?client_id=" + googleClientId + "&redirect_uri=" + redirectUrl + "&response_type=code&scope=email%20profile%20openid&access_type=offline");
+    }
+
+    @Operation(summary = "구글 로그인/회원가입 (Oauth2)")
+    @GetMapping("/oauth2/google")
+    public DataResponseDto<JwtResponse> loginGoogle(@RequestParam(value = "code") String authCode) {
+
+        return DataResponseDto.of(userService.loginWithGoogle(authCode, googleClientId, googleClientSecret, googleRedirectUrl));
+    }
+
 
 }
