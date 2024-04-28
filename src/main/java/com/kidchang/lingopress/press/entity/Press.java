@@ -23,7 +23,6 @@ public class Press {
     private String originalUrl;
     private String imageUrl;
     private Integer totalContentLine;
-    @ColumnDefault("3")
     @Size(min = 0, max = 5, message = "유저 점수의 평균은 0~5사이 입니다.")
     private Float rating;
     private LocalDateTime publishedAt;
