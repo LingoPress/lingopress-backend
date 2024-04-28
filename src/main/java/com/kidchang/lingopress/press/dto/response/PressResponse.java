@@ -7,26 +7,34 @@ import lombok.Builder;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record PressResponse(
-    Long id,
-    String title,
-    String content,
-    String imageUrl,
-    String originalUrl,
-    Integer totalContentLine,
-    Float rating,
-    String publishedAt
+        Long id,
+        String title,
+        String content,
+        String imageUrl,
+        String originalUrl,
+        Integer totalContentLine,
+        Float rating,
+        String publishedAt,
+        String translatedTitle,
+        String author,
+        String publisher,
+        String language
 ) {
 
     public static PressResponse from(Press press) {
         return PressResponse.builder()
-            .id(press.getId())
-            .title(press.getTitle())
-            .content(press.getContent())
-            .imageUrl(press.getImageUrl())
-            .originalUrl(press.getOriginalUrl())
-            .totalContentLine(press.getTotalContentLine())
-            .rating(press.getRating())
-            .publishedAt(press.getPublishedAt().toString())
-            .build();
+                .id(press.getId())
+                .title(press.getTitle())
+                .content(press.getContent())
+                .imageUrl(press.getImageUrl())
+                .originalUrl(press.getOriginalUrl())
+                .totalContentLine(press.getTotalContentLine())
+                .rating(press.getRating())
+                .publishedAt(press.getPublishedAt().toString())
+                .translatedTitle(press.getTranslatedTitle())
+                .author(press.getAuthor())
+                .publisher(press.getPublisher())
+                .language(press.getLanguage())
+                .build();
     }
 }
