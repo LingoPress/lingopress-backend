@@ -36,7 +36,6 @@ public class UserService {
 
     @Transactional
     public JwtResponse loginWithGoogle(String authCode, String googleClientId, String googleClientSecret, String googleRedirectUrl) {
-        System.out.println("authCode = " + authCode);
         GoogleUserInfoVO info = getSubWithGoogle(authCode, googleClientId, googleClientSecret, googleRedirectUrl);
 
         // 이미 가입된 유저인지 확인
