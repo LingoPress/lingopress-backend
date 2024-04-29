@@ -4,7 +4,7 @@
 
 ### 홈페이지 링크
 
-https://lingopress.kro.kr/
+https://lingopress.me
 
 ### 프로젝트 소개
 
