@@ -38,6 +38,7 @@ public class LearnedPress extends BaseTimeEntity {
         this.isLearned = false;
         this.comment = "";
         this.learnedContentLine = 0;
+        this.translatedContentLine = 0;
     }
 
     public void increaseLearnedContentLineCount() {
@@ -47,4 +48,9 @@ public class LearnedPress extends BaseTimeEntity {
     public void decreaseLearnedContentLineCount() {
         this.learnedContentLine--;
     }
+
+    public void increaseTranslatedContentLineCount() {
+        this.translatedContentLine++;
+    }
+
 }

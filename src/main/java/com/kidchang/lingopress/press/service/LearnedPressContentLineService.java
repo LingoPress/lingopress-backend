@@ -78,9 +78,9 @@ public class LearnedPressContentLineService {
                     .user(user)
                     .userTranslatedLine(request.translateText())
                     .build();
-            learnedPressContentLineRepository.save(
-                    learnedPressContentLine);
-
+            learnedPressContentLineRepository.save(learnedPressContentLine);
+            // 문장이 맞은지 여부에 상관없이 문장을 처음 해석하면 카운트 증가
+            learnedPress.increaseTranslatedContentLineCount();
         } else {
             // 이미 있는 문장이라면, 기존 카운트 내역 제거
             if (learnedPressContentLine.getIsCorrect() != null) {
