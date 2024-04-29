@@ -82,8 +82,6 @@ public class LearnedPressContentLineService {
             learnedPress.increaseTranslatedContentLineCount();
             if (request.isCorrect()) {
                 learnedPress.increaseLearnedContentLineCount();
-            } else {
-                learnedPress.decreaseLearnedContentLineCount();
             }
 
             // 문장이 맞은지 여부에 상관없이 문장을 처음 해석하면 카운트 증가
