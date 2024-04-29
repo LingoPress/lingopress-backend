@@ -86,7 +86,7 @@ jobs:
           status: ${{ job.status }}
           title: "deploy"
           color: 0x0000ff
-          url: "https://lingopress.kro.kr"
+          url: "https://lingopress.me"
           username: 배포하면 짓는 봇
           content: "왈왈! 배포 완료!"
           avatar_url: ${{ secrets.AVATAR_URL }}
