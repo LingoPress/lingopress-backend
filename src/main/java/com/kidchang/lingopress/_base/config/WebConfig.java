@@ -10,7 +10,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000", "https://lingopress.me")
+                .allowedOrigins("http://localhost:3000", "https://lingopress.me", "https://www.lingopress.me")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
                 .allowedHeaders("Authorization", "Content-Type")
                 .maxAge(3600)
