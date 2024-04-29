@@ -83,7 +83,7 @@ public class LearnedPressContentLineService {
 
         } else {
             // 이미 있는 문장이라면, 기존 카운트 내역 제거
-            if (learnedPressContentLine.getIsCorrect()) {
+            if (learnedPressContentLine.getIsCorrect() != null) {
                 learnedPress.decreaseTranslatedLineCount();
             }
 
