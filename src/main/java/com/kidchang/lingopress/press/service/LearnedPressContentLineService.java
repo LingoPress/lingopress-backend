@@ -78,13 +78,32 @@ public class LearnedPressContentLineService {
                     .user(user)
                     .userTranslatedLine(request.translateText())
                     .build();
-            learnedPressContentLineRepository.save(
-                    learnedPressContentLine);
+            learnedPressContentLineRepository.save(learnedPressContentLine);
+            learnedPress.increaseTranslatedContentLineCount();
+            if (request.isCorrect()) {
+                learnedPress.increaseLearnedContentLineCount();
+            } else {
+                learnedPress.decreaseLearnedContentLineCount();
+            }
 
+            // 문장이 맞은지 여부에 상관없이 문장을 처음 해석하면 카운트 증가
         } else {
             // 이미 있는 문장이라면, 기존 카운트 내역 제거
-            if (learnedPressContentLine.getIsCorrect()) {
-                learnedPress.decreaseTranslatedLineCount();
+//            if (learnedPressContentLine.getIsCorrect() != request.isCorrect()) {
+//                learnedPress.decreaseLearnedContentLineCount();
+//            }
+
+            if (learnedPressContentLine.getIsCorrect() != null) {
+                // 틀렸다가 맞았을 때
+                if (!learnedPressContentLine.getIsCorrect() && request.isCorrect()) {
+                    learnedPress.increaseLearnedContentLineCount();
+                }
+                // 맞았다가 틀렸을 때
+                if (learnedPressContentLine.getIsCorrect() && !request.isCorrect()) {
+                    learnedPress.decreaseLearnedContentLineCount();
+                }
+            } else {
+                learnedPress.increaseTranslatedContentLineCount();
             }
 
             // 만약 checkPressContentLine메서드를 실행할 때 isCorrect를 안보내면 에러 발생
@@ -92,10 +111,6 @@ public class LearnedPressContentLineService {
             learnedPressContentLine.setUserTranslatedLine(request.translateText());
         }
 
-        // 문장이 맞으면 learnedPress의 번역한 문장 수를 증가시킨다.
-        if (request.isCorrect()) {
-            learnedPress.increaseTranslatedLineCount();
-        }
 
         return PressContentLineResponse.builder()
                 .originalLineText(pressContentLine.getLineText())
