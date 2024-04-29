@@ -84,7 +84,7 @@ public class LearnedPressContentLineService {
         } else {
             // 이미 있는 문장이라면, 기존 카운트 내역 제거
             if (learnedPressContentLine.getIsCorrect() != null) {
-                learnedPress.decreaseTranslatedLineCount();
+                learnedPress.decreaseLearnedContentLineCount();
             }
 
             // 만약 checkPressContentLine메서드를 실행할 때 isCorrect를 안보내면 에러 발생
@@ -94,7 +94,7 @@ public class LearnedPressContentLineService {
 
         // 문장이 맞으면 learnedPress의 번역한 문장 수를 증가시킨다.
         if (request.isCorrect()) {
-            learnedPress.increaseTranslatedLineCount();
+            learnedPress.increaseLearnedContentLineCount();
         }
 
         return PressContentLineResponse.builder()

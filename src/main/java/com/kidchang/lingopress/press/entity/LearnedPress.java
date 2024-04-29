@@ -2,6 +2,7 @@ package com.kidchang.lingopress.press.entity;
 
 import com.kidchang.lingopress._base.entity.BaseTimeEntity;
 import com.kidchang.lingopress.user.User;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +26,10 @@ public class LearnedPress extends BaseTimeEntity {
     private Boolean isLearned;
     private String comment;
     private Integer rating;
+    @Schema(description = "옳게 번역한 라인 수")
     private Integer learnedContentLine;
+    @Schema(description = "번역한 라인 수. 올바른지 여부 X")
+    private Integer translatedContentLine;
 
     @Builder
     public LearnedPress(User user, Press press) {
@@ -36,11 +40,11 @@ public class LearnedPress extends BaseTimeEntity {
         this.learnedContentLine = 0;
     }
 
-    public void increaseTranslatedLineCount() {
+    public void increaseLearnedContentLineCount() {
         this.learnedContentLine++;
     }
 
-    public void decreaseTranslatedLineCount() {
+    public void decreaseLearnedContentLineCount() {
         this.learnedContentLine--;
     }
 }
