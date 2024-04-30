@@ -20,7 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/v1/press")
+@RequestMapping("/v1/press")
 @RequiredArgsConstructor
 public class PressController {
 

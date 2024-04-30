@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @Slf4j
-@RequestMapping("/api/v1/words")
+@RequestMapping("/v1/words")
 @RequiredArgsConstructor
 public class WordController {
 
