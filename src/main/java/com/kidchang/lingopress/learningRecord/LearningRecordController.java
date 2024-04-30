@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/learning-record")
+@RequestMapping("/v1/learning-record")
 @RequiredArgsConstructor
 public class LearningRecordController {
     private final LearningRecordService learningRecordService;

@@ -40,12 +40,12 @@ public class SecurityConfig {
                                 .requestMatchers("/", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**")
                                 .permitAll()
                                 .requestMatchers(
-                                        "/api/v1/users/oauth2/**",
-                                        "/api/v1/users/reissue",
-                                        "/api/v1/users/status",
-                                        "/api/v1/press/**",
+                                        "/v1/users/oauth2/**",
+                                        "/v1/users/reissue",
+                                        "/v1/users/status",
+                                        "/v1/press/**",
                                         "/actuator/**",
-                                        "/api/v1/users/error-occur"
+                                        "/v1/users/error-occur"
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 )
