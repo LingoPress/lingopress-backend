@@ -59,18 +59,17 @@ public class JwtTokenUtil {
                 .compact();
     }
 
-    public JwtResponse generateJwt(User user) {
-        long now = (new Date()).getTime();
-
+    public JwtResponse generateJwt(User user, boolean isNewUser) {
         String accessToken = createAccessToken(user, ACCESS_TOKEN_EXPIRE_TIME_MS);
         String refreshToken = createRefreshToken(user, REFRESH_TOKEN_EXPIRE_TIME_MS);
 
-        return JwtResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .accessTokenExpiresIn(ACCESS_TOKEN_EXPIRE_TIME_MS)
-                .build();
+        if (isNewUser) {
+            return new JwtResponse(user.getNickname(), accessToken, refreshToken, ACCESS_TOKEN_EXPIRE_TIME_MS, true);
+        } else {
+            return new JwtResponse(user.getNickname(), accessToken, refreshToken, ACCESS_TOKEN_EXPIRE_TIME_MS, false);
+        }
     }
+
 
     public Authentication getAuthentication(String accessToken) {
         Claims claims = extractClaims(accessToken);

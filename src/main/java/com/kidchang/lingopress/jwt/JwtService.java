@@ -21,21 +21,26 @@ public class JwtService {
     private final UserRepository userRepository;
 
     public JwtResponse issueJwt(User user) {
-        JwtResponse jwtResponse = jwtTokenUtil.generateJwt(user);
 
         if (refreshTokenRepository.existsByUser(user)) { // 로그인
+            JwtResponse jwtResponse = jwtTokenUtil.generateJwt(user, false);
             RefreshToken refreshToken = refreshTokenRepository.findByUser(user);
             refreshToken.update(jwtResponse.refreshToken());
+            return jwtResponse;
+
         } else { // 회원가입
+            JwtResponse jwtResponse = jwtTokenUtil.generateJwt(user, true);
             RefreshToken refreshToken = RefreshToken.builder()
                     .refreshToken(jwtResponse.refreshToken())
                     .user(user)
                     .build();
             refreshTokenRepository.save(refreshToken);
+            return jwtResponse;
+
         }
 
-        return jwtResponse;
     }
+
 
     public JwtResponse reissueJwt(JwtRequest jwtRequest) {
         if (!jwtTokenUtil.ValidateRefreshToken(jwtRequest.refreshToken())) {
@@ -52,7 +57,7 @@ public class JwtService {
             throw new BusinessException(Code.INVALID_REFRESH_TOKEN);
         }
 
-        JwtResponse jwtResponse = jwtTokenUtil.generateJwt(user);
+        JwtResponse jwtResponse = jwtTokenUtil.generateJwt(user, false);
 
         refreshToken.update(jwtResponse.refreshToken());
 
