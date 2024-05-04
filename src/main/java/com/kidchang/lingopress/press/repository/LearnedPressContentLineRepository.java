@@ -38,7 +38,8 @@ public interface LearnedPressContentLineRepository extends
             "SELECT new com.kidchang.lingopress.press.dto.response.PressContentLineResponse(pcl.id, pcl.lineNumber, lpcl.userTranslatedLine, pcl.translatedLineText, pcl.lineText, lpcl.isCorrect, lpcl.memo) "
                     + "FROM PressContentLine AS pcl "
                     + "LEFT OUTER JOIN LearnedPressContentLine AS lpcl ON lpcl.lineNumber = pcl.lineNumber AND lpcl.user.id = :userId AND lpcl.press.id = :pressId "
-                    + "WHERE pcl.press.id = :pressId")
+                    + "WHERE pcl.press.id = :pressId" +
+                    " ORDER BY pcl.lineNumber ASC")
     List<PressContentLineResponse> findByUserAndPressAndPressContent(@Param("userId") Long user,
                                                                      @Param("pressId") Long pressId);
 }

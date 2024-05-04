@@ -33,9 +33,13 @@ public class PressController {
     @GetMapping("")
     public DataResponseDto<SliceResponseDto<PressResponse>> getPressList(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size
-    ) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+            @RequestParam(defaultValue = "6") int size,
+            @RequestParam(defaultValue = "publishedAt") String sort,
+            @RequestParam(defaultValue = "desc") String order) {
+        Pageable pageable;
+
+        if (order.equals("asc")) pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
+        else pageable = PageRequest.of(page, size, Sort.by(sort).descending());
 
         return DataResponseDto.of(
                 SliceResponseDto.from(pressService.getPressList(pageable)));
