@@ -10,4 +10,6 @@ class LingoPressApplicationTests {
     void contextLoads() {
     }
 
+    // 로그인 테스트
+
 }
