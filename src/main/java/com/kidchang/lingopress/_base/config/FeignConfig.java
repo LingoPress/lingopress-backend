@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableFeignClients(basePackages = "com.kidchang.lingopress.client")
+@EnableFeignClients(basePackageClasses = com.kidchang.lingopress.client.LingoGptClient.class)
 public class FeignConfig {
 
     //    @Value("${deepl.auth-key}")
