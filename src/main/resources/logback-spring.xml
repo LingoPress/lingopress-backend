@@ -12,7 +12,6 @@
               value="[%d{yyyy-MM-dd HH:mm:ss}:%-3relative] %-5level ${PID:-} --- [%15.15thread] %-40.40logger{36} : %msg%n"/>
     <!-- 로그파일의 위치 정의 -->
     <property name="LOG_PATH" value="/var/log"/>
-    <springProperty name="DISCORD_WEBHOOK_URI" source="logging.discord.webhook-url"/>
 
     <springProfile name="dev">
         <include resource="console-appender.xml"/>
@@ -27,12 +26,10 @@
     <springProfile name="!dev">
         <include resource="file-info-appender.xml"/>
         <include resource="file-error-appender.xml"/>
-        <include resource="discord-appender.xml"/>
 
         <root level="INFO">
             <appender-ref ref="FILE-INFO"/>
             <appender-ref ref="FILE-ERROR"/>
-            <appender-ref ref="ASYNC_DISCORD"/>
 
         </root>
     </springProfile>
