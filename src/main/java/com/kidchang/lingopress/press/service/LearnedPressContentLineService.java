@@ -3,11 +3,14 @@ package com.kidchang.lingopress.press.service;
 import com.kidchang.lingopress._base.constant.Code;
 import com.kidchang.lingopress._base.exception.BusinessException;
 import com.kidchang.lingopress._base.utils.SecurityUtil;
+import com.kidchang.lingopress.client.AITextSimilarityAnalysisClient;
 import com.kidchang.lingopress.learningRecord.LearningRecordService;
 import com.kidchang.lingopress.press.PressRepository;
+import com.kidchang.lingopress.press.dto.request.TextSimilarityAnalysisRequest;
 import com.kidchang.lingopress.press.dto.request.TranslateContentLineMemoRequest;
 import com.kidchang.lingopress.press.dto.request.TranslateContentLineRequest;
 import com.kidchang.lingopress.press.dto.response.PressContentLineResponse;
+import com.kidchang.lingopress.press.dto.response.TextSimilarityAnalysisResponse;
 import com.kidchang.lingopress.press.entity.LearnedPress;
 import com.kidchang.lingopress.press.entity.LearnedPressContentLine;
 import com.kidchang.lingopress.press.entity.Press;
@@ -19,6 +22,8 @@ import com.kidchang.lingopress.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -34,6 +39,7 @@ public class LearnedPressContentLineService {
     private final LearnedPressContentLineRepository learnedPressContentLineRepository;
     private final PressContentLineRepository pressContentLineRepository;
     private final LearningRecordService learningRecordService;
+    private final AITextSimilarityAnalysisClient aiTextSimilarityAnalysisClient;
 
     @Transactional
     public PressContentLineResponse checkPressContentLine(TranslateContentLineRequest request) {
@@ -176,4 +182,28 @@ public class LearnedPressContentLineService {
 
     }
 
+    public Slice<PressContentLineResponse> getMemoList(Pageable pageable) {
+        Long userId = SecurityUtil.getUserId();
+
+
+        //해당 유저가 작성한 learnedPressContentLine 중 메모가 작성된 것만 가져온다.
+
+        Slice<LearnedPressContentLine> learnedPressContentLines = learnedPressContentLineRepository
+                .findByUserAndMemoIsNotNull(userId, pageable);
+
+        return learnedPressContentLines.map(learnedPressContentLine -> PressContentLineResponse.builder()
+                .id(learnedPressContentLine.getId())
+                .pressContentLineNumber(learnedPressContentLine.getLineNumber())
+                .userTranslatedLineText(learnedPressContentLine.getUserTranslatedLine())
+                .machineTranslatedLineText(learnedPressContentLine.getPressContentLine().getTranslatedLineText())
+                .originalLineText(learnedPressContentLine.getPressContentLine().getLineText())
+                .isCorrect(learnedPressContentLine.getIsCorrect())
+                .memo(learnedPressContentLine.getMemo())
+                .build());
+    }
+
+    public TextSimilarityAnalysisResponse checkPressContentLineSimilarity(TextSimilarityAnalysisRequest request) {
+        // 나중에는 사용 횟수 기록을 남길 수 있도록. 그리고 특정 문장에 대한 요청 횟수를 한정할 수 있도록.
+        return aiTextSimilarityAnalysisClient.checkPressContentLineSimilarity(request);
+    }
 }

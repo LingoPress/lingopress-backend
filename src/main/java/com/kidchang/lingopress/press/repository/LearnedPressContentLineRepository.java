@@ -4,6 +4,8 @@ import com.kidchang.lingopress.press.dto.response.PressContentLineResponse;
 import com.kidchang.lingopress.press.entity.LearnedPress;
 import com.kidchang.lingopress.press.entity.LearnedPressContentLine;
 import com.kidchang.lingopress.press.entity.PressContentLine;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -42,4 +44,10 @@ public interface LearnedPressContentLineRepository extends
                     " ORDER BY pcl.lineNumber ASC")
     List<PressContentLineResponse> findByUserAndPressAndPressContent(@Param("userId") Long user,
                                                                      @Param("pressId") Long pressId);
+
+
+    //해당 유저가 작성한 learnedPressContentLine 중 메모가 작성된 것만 가져온다.
+    @Query("SELECT lpcl FROM LearnedPressContentLine AS lpcl "
+            + "WHERE lpcl.user.id = :userId AND lpcl.memo IS NOT NULL OR lpcl.memo != ''")
+    Slice<LearnedPressContentLine> findByUserAndMemoIsNotNull(@Param("userId") Long userId, Pageable pageable);
 }

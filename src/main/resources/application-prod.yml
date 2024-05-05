@@ -40,7 +40,7 @@ chatgpt:
 
 
 lingo-ai:
-  url: http://lingopress-ai:8000
+  url: ${ai-url}
 
 
 greeting:
