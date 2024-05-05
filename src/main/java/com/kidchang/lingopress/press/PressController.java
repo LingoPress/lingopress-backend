@@ -66,6 +66,18 @@ public class PressController {
         return DataResponseDto.of(learnedPressContentLineService.writePressContentLineMemo(request));
     }
 
+    @Operation(summary = "내 메모 모아보기")
+    @GetMapping("/memo")
+    public DataResponseDto<SliceResponseDto<PressContentLineResponse>> getMemoList(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
+        return DataResponseDto.of(
+                SliceResponseDto.from(learnedPressContentLineService.getMemoList(pageable)));
+    }
+
     @Operation(summary = "내가 번역한 프레스 리스트 조회")
     @GetMapping("/learned")
     public DataResponseDto<SliceResponseDto<LearnedPressResponse>> getLearnedPressList(

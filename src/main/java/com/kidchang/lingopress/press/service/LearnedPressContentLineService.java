@@ -19,6 +19,8 @@ import com.kidchang.lingopress.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -176,4 +178,23 @@ public class LearnedPressContentLineService {
 
     }
 
+    public Slice<PressContentLineResponse> getMemoList(Pageable pageable) {
+        Long userId = SecurityUtil.getUserId();
+
+
+        //해당 유저가 작성한 learnedPressContentLine 중 메모가 작성된 것만 가져온다.
+
+        Slice<LearnedPressContentLine> learnedPressContentLines = learnedPressContentLineRepository
+                .findByUserAndMemoIsNotNull(userId, pageable);
+
+        return learnedPressContentLines.map(learnedPressContentLine -> PressContentLineResponse.builder()
+                .id(learnedPressContentLine.getId())
+                .pressContentLineNumber(learnedPressContentLine.getLineNumber())
+                .userTranslatedLineText(learnedPressContentLine.getUserTranslatedLine())
+                .machineTranslatedLineText(learnedPressContentLine.getPressContentLine().getTranslatedLineText())
+                .originalLineText(learnedPressContentLine.getPressContentLine().getLineText())
+                .isCorrect(learnedPressContentLine.getIsCorrect())
+                .memo(learnedPressContentLine.getMemo())
+                .build());
+    }
 }
