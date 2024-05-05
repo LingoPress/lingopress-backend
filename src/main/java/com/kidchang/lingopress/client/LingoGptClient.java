@@ -10,4 +10,5 @@ public interface LingoGptClient {
 
     @PostMapping(value = "/translate/word")
     LingoGptResponse translate(LingoGptRequest request);
+
 }

@@ -75,7 +75,8 @@ jobs:
                     --CHATGPT_KEY=${{ secrets.CHATGPT_KEY }} \
                     --JWT_SECRET=${{ secrets.JWT_SECRET }} \
                     --SENTRY_DSN=${{ secrets.SENTRY_DSN }} \
-                    --GOOGLE_SECRET=${{ secrets.GOOGLE_SECRET }}
+                    --GOOGLE_SECRET=${{ secrets.GOOGLE_SECRET }} \
+                    --LAMBDA_AI_URL=${{ secrets.LAMBDA_AI_URL }}
             sudo docker image prune -f
 
       - name: Discord Webhook Action
