@@ -47,6 +47,7 @@ public enum Code {
     PRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 뉴스를 찾을 수 없습니다."),
 
     NOT_FOUND_LEARNING_RECORD(HttpStatus.NOT_FOUND, "학습 기록을 찾을 수 없습니다."),
+    SIMILARITY_LIMIT_EXCEEDED(HttpStatus.TOO_MANY_REQUESTS, "유사도 검사 횟수 하루 사용량을 초과하였습니다."),
 
     // Translate: Global
     TRANSLATION_ERROR(HttpStatus.BAD_REQUEST, "번역 에러가 발생하였습니다."),
