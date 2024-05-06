@@ -3,6 +3,8 @@ package com.kidchang.lingopress.press.service;
 import com.kidchang.lingopress._base.constant.Code;
 import com.kidchang.lingopress._base.exception.BusinessException;
 import com.kidchang.lingopress._base.utils.SecurityUtil;
+import com.kidchang.lingopress.apiUsage.ApiUsageTracker;
+import com.kidchang.lingopress.apiUsage.ApiUsageTrackerRepository;
 import com.kidchang.lingopress.client.AITextSimilarityAnalysisClient;
 import com.kidchang.lingopress.learningRecord.LearningRecordService;
 import com.kidchang.lingopress.press.PressRepository;
@@ -40,6 +42,7 @@ public class LearnedPressContentLineService {
     private final PressContentLineRepository pressContentLineRepository;
     private final LearningRecordService learningRecordService;
     private final AITextSimilarityAnalysisClient aiTextSimilarityAnalysisClient;
+    private final ApiUsageTrackerRepository apiUsageTrackerRepository;
 
     @Transactional
     public PressContentLineResponse checkPressContentLine(TranslateContentLineRequest request) {
@@ -202,8 +205,25 @@ public class LearnedPressContentLineService {
                 .build());
     }
 
+    @Transactional
     public TextSimilarityAnalysisResponse checkPressContentLineSimilarity(TextSimilarityAnalysisRequest request) {
-        // 나중에는 사용 횟수 기록을 남길 수 있도록. 그리고 특정 문장에 대한 요청 횟수를 한정할 수 있도록.
+        Long userId = SecurityUtil.getUserId();
+        ApiUsageTracker tracker = apiUsageTrackerRepository.findByUserIdAndRequestDate(userId, LocalDate.now());
+
+        if (tracker == null) {
+            tracker = ApiUsageTracker.builder()
+                    .userId(userId)
+                    .requestDate(LocalDate.now())
+                    .build();
+            apiUsageTrackerRepository.save(tracker);
+        }
+
+        int similarityApiCount = tracker.getSimilarityApiCount();
+        if (similarityApiCount >= 50) {
+            throw new BusinessException(Code.SIMILARITY_LIMIT_EXCEEDED);
+        }
+        tracker.setSimilarityApiCount(similarityApiCount + 1);
+
         return aiTextSimilarityAnalysisClient.checkPressContentLineSimilarity(request);
     }
 }
