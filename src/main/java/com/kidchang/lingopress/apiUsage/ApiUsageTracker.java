@@ -1,22 +1,17 @@
-package com.kidchang.lingopress.translate;
+package com.kidchang.lingopress.apiUsage;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
-import java.time.LocalDate;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor
 @Data
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"userId", "requestDate"})})
-public class TranslateApiUsageTracker {
+public class ApiUsageTracker {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,8 +26,11 @@ public class TranslateApiUsageTracker {
     @Column(nullable = false, columnDefinition = "int default 0")
     private int requestCount;
 
+    @Column(nullable = false, columnDefinition = "int default 0")
+    private int similarityApiCount;
+
     @Builder
-    public TranslateApiUsageTracker(Long userId, LocalDate requestDate, int requestCount) {
+    public ApiUsageTracker(Long userId, LocalDate requestDate, int requestCount) {
         this.userId = userId;
         this.requestDate = requestDate;
         this.requestCount = requestCount;

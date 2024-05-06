@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
     // Code 예외 처리
     @ExceptionHandler(BusinessException.class)
     protected ResponseEntity<Object> handleBusinessException(BusinessException e) {
-        log.error(e.toString(), e);
+        log.warn(e.toString(), e);
         return handleExceptionBusiness(e.getErrorCode(), e);
     }
 

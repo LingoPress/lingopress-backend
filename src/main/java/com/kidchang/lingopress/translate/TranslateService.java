@@ -4,6 +4,8 @@ import com.kidchang.lingopress._base.constant.Code;
 import com.kidchang.lingopress._base.exception.BusinessException;
 import com.kidchang.lingopress._base.exception.GlobalException;
 import com.kidchang.lingopress._base.utils.SecurityUtil;
+import com.kidchang.lingopress.apiUsage.ApiUsageTracker;
+import com.kidchang.lingopress.apiUsage.ApiUsageTrackerRepository;
 import com.kidchang.lingopress.client.LingoGptClient;
 import com.kidchang.lingopress.translate.dto.request.LingoGptRequest;
 import com.kidchang.lingopress.translate.dto.response.LingoGptResponse;
@@ -21,7 +23,7 @@ import java.time.LocalDate;
 public class TranslateService {
 
     private final LingoGptClient lingoGptClient;
-    private final TranslateApiUsageTrackerRepository translateApiUsageTrackerRepository;
+    private final ApiUsageTrackerRepository apiUsageTrackerRepository;
 
     public TranslateTextResponse translate(LingoGptRequest text) {
 
@@ -42,15 +44,15 @@ public class TranslateService {
 
         Long userId = SecurityUtil.getUserId();
         // 1. 번역 횟수 기록하기
-        TranslateApiUsageTracker tracker = translateApiUsageTrackerRepository.findByUserIdAndRequestDate(
+        ApiUsageTracker tracker = apiUsageTrackerRepository.findByUserIdAndRequestDate(
                 userId, LocalDate.now());
 
         if (tracker == null) {
-            tracker = TranslateApiUsageTracker.builder()
+            tracker = ApiUsageTracker.builder()
                     .userId(userId)
                     .requestDate(LocalDate.now())
                     .build();
-            translateApiUsageTrackerRepository.save(tracker);
+            apiUsageTrackerRepository.save(tracker);
         }
 
         // 2. 번역 횟수가 20회가 넘으면 예외 발생시키기
