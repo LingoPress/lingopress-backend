@@ -36,8 +36,7 @@ public class UserService {
     private final RestTemplate restTemplate;
 
     public JwtResponse reissue(JwtRequest jwtRequest) {
-        JwtResponse jwtResponse = jwtService.reissueJwt(jwtRequest);
-        return jwtResponse;
+        return jwtService.reissueJwt(jwtRequest);
     }
 
     @Transactional
