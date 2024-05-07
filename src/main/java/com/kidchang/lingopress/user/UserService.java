@@ -1,5 +1,7 @@
 package com.kidchang.lingopress.user;
 
+import com.kidchang.lingopress._base.constant.Code;
+import com.kidchang.lingopress._base.exception.BusinessException;
 import com.kidchang.lingopress.jwt.JwtService;
 import com.kidchang.lingopress.jwt.dto.request.JwtRequest;
 import com.kidchang.lingopress.jwt.dto.response.JwtResponse;
@@ -14,9 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -25,9 +26,14 @@ import java.util.Optional;
 public class UserService {
 
 
+    private static final String GOOGLE_ACCESS_TOKEN_URL = "https://oauth2.googleapis.com/token";
+    private static final String GOOGLE_USER_INFO_URL = "https://oauth2.googleapis.com/tokeninfo";
+
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+
+    private final RestTemplate restTemplate;
 
     public JwtResponse reissue(JwtRequest jwtRequest) {
         JwtResponse jwtResponse = jwtService.reissueJwt(jwtRequest);
@@ -36,7 +42,7 @@ public class UserService {
 
     @Transactional
     public JwtResponse loginWithGoogle(String authCode, String googleClientId, String googleClientSecret, String googleRedirectUrl) {
-        GoogleUserInfoVO info = getSubWithGoogle(authCode, googleClientId, googleClientSecret, googleRedirectUrl);
+        GoogleUserInfoVO info = getGoogleUserInfo(authCode, googleClientId, googleClientSecret, googleRedirectUrl);
         User user = findOrCreateUser(info);
         return jwtService.issueJwt(user);
 
@@ -62,6 +68,7 @@ public class UserService {
                 .build();
     }
 
+
     /**
      * 구글로부터 access token을 받아서 user 정보를 가져옴
      *
@@ -71,26 +78,43 @@ public class UserService {
      * @param googleRedirectUrl  리다이렉트 URL
      * @return
      */
-    public GoogleUserInfoVO getSubWithGoogle(String authCode, String googleClientId, String googleClientSecret, String googleRedirectUrl) {
-        RestTemplate restTemplate = new RestTemplate();
-        GoogleRequest googleOAuthRequestParam = GoogleRequest
-                .builder()
-                .clientId(googleClientId)
-                .clientSecret(googleClientSecret)
-                .code(authCode)
-                .redirectUri(googleRedirectUrl)
-                .grantType("authorization_code").build();
-        ResponseEntity<GoogleResponse> accessEntity = restTemplate.postForEntity("https://oauth2.googleapis.com/token",
-                googleOAuthRequestParam, GoogleResponse.class);
-        String jwtToken = accessEntity.getBody().getId_token();
-        Map<String, String> map = new HashMap<>();
-        map.put("id_token", jwtToken);
-        ResponseEntity<GoogleInfResponse> resultEntity = restTemplate.postForEntity("https://oauth2.googleapis.com/tokeninfo",
-                map, GoogleInfResponse.class);
+    public GoogleUserInfoVO getGoogleUserInfo(String authCode, String googleClientId, String googleClientSecret, String googleRedirectUrl) {
+        return getUserInfo(getAccessToken(authCode, googleClientId, googleClientSecret, googleRedirectUrl));
+    }
+
+
+    private GoogleUserInfoVO getUserInfo(String accessToken) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(GOOGLE_USER_INFO_URL)
+                .queryParam("id_token", accessToken);
+
+        ResponseEntity<GoogleInfResponse> resultEntity = restTemplate.getForEntity(builder.toUriString(), GoogleInfResponse.class);
+        if (!resultEntity.getStatusCode().is2xxSuccessful()) {
+            throw new BusinessException(Code.FAILED_TO_GET_GOOGLE_USER_INFO);
+        }
+
         return GoogleUserInfoVO.builder()
                 .sub(resultEntity.getBody().getSub())
                 .email(resultEntity.getBody().getEmail())
                 .name(resultEntity.getBody().getName())
                 .build();
     }
+
+    private String getAccessToken(String authCode, String googleClientId, String googleClientSecret, String googleRedirectUrl) {
+        GoogleRequest googleOAuthRequestParam = GoogleRequest.builder()
+                .clientId(googleClientId)
+                .clientSecret(googleClientSecret)
+                .code(authCode)
+                .redirectUri(googleRedirectUrl)
+                .grantType("authorization_code")
+                .build();
+
+        ResponseEntity<GoogleResponse> accessEntity = restTemplate.postForEntity(GOOGLE_ACCESS_TOKEN_URL, googleOAuthRequestParam, GoogleResponse.class);
+        if (!accessEntity.getStatusCode().is2xxSuccessful()) {
+            throw new BusinessException(Code.FAILED_TO_GET_GOOGLE_ACCESS_TOKEN);
+        }
+
+        return accessEntity.getBody().getId_token();
+    }
+
+
 }
