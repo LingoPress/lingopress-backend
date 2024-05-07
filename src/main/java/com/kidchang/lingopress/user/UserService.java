@@ -37,26 +37,29 @@ public class UserService {
     @Transactional
     public JwtResponse loginWithGoogle(String authCode, String googleClientId, String googleClientSecret, String googleRedirectUrl) {
         GoogleUserInfoVO info = getSubWithGoogle(authCode, googleClientId, googleClientSecret, googleRedirectUrl);
+        User user = findOrCreateUser(info);
+        return jwtService.issueJwt(user);
 
-        // 이미 가입된 유저인지 확인
-        Optional<User> user = userRepository.findByProviderAndProviderId("google", info.getSub());
+    }
 
-        // 가입되지 않은 유저라면 가입
-        if (user.isEmpty()) {
-            User newUser =
-                    User.builder()
-                            .provider("google")
-                            .providerId(info.getSub())
-                            .nickname(info.getName())
-                            .role("ROLE_USER")
-                            .email(info.getEmail())
-                            .username("g_" + info.getSub())
-                            .build();
-            user = Optional.of(userRepository.save(newUser));
-        }
+    private User findOrCreateUser(GoogleUserInfoVO info) {
+        Optional<User> optionalUser = userRepository.findByProviderAndProviderId("google", info.getSub());
 
-        return jwtService.issueJwt(user.get());
+        return optionalUser.orElseGet(() -> {
+            User newUser = createNewUser(info);
+            return userRepository.save(newUser);
+        });
+    }
 
+    private User createNewUser(GoogleUserInfoVO info) {
+        return User.builder()
+                .provider("google")
+                .providerId(info.getSub())
+                .nickname(info.getName())
+                .role("ROLE_USER")
+                .email(info.getEmail())
+                .username("g_" + info.getSub())
+                .build();
     }
 
     /**
