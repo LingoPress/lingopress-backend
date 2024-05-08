@@ -35,8 +35,7 @@ public class PressService {
 
     public Slice<PressResponse> getPressList(Pageable pageable) {
         Slice<Press> pressSlice = pressRepository.findAll(pageable);
-        Slice<PressResponse> pressResponse = pressSlice.map(PressResponse::from);
-        return pressResponse;
+        return pressSlice.map(PressResponse::from);
     }
 
     public Press getPressById(Long pressId) {
