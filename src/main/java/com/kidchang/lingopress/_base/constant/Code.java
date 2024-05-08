@@ -41,6 +41,8 @@ public enum Code {
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
     AUTH_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "인증 정보를 찾을 수 없습니다."),
     NOT_ACCESSIBLE_USER(HttpStatus.FORBIDDEN, "접근 권한이 없는 사용자입니다."),
+    FAILED_TO_GET_GOOGLE_USER_INFO(HttpStatus.BAD_REQUEST, "구글 사용자 정보를 가져오는데 실패하였습니다."),
+    FAILED_TO_GET_GOOGLE_ACCESS_TOKEN(HttpStatus.BAD_REQUEST, "구글 액세스 토큰을 가져오는데 실패하였습니다."),
 
 
     // Press

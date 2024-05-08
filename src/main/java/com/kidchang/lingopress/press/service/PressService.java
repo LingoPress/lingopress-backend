@@ -35,13 +35,16 @@ public class PressService {
 
     public Slice<PressResponse> getPressList(Pageable pageable) {
         Slice<Press> pressSlice = pressRepository.findAll(pageable);
-        Slice<PressResponse> pressResponse = pressSlice.map(PressResponse::from);
-        return pressResponse;
+        return pressSlice.map(PressResponse::from);
+    }
+
+    public Press getPressById(Long pressId) {
+        return pressRepository.findById(pressId)
+                .orElseThrow(() -> new BusinessException(Code.PRESS_NOT_FOUND));
     }
 
     public PressContentResponse getPressDetail(Long pressId) {
-        Press press = pressRepository.findById(pressId)
-                .orElseThrow(() -> new BusinessException(Code.PRESS_NOT_FOUND));
+        Press press = getPressById(pressId);
 
         // 혹시 로그인되어있으면, 해당 유저가 번역한 정보가 있는지 확인하고 매칭시켜야함.
         Long userId = SecurityUtil.getUserId();

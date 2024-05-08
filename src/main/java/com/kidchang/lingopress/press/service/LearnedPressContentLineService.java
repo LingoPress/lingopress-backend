@@ -44,6 +44,8 @@ public class LearnedPressContentLineService {
     private final AITextSimilarityAnalysisClient aiTextSimilarityAnalysisClient;
     private final ApiUsageTrackerRepository apiUsageTrackerRepository;
 
+    private final PressService pressService;
+
     @Transactional
     public PressContentLineResponse checkPressContentLine(TranslateContentLineRequest request) {
         Long pressId = request.pressId();
@@ -53,8 +55,7 @@ public class LearnedPressContentLineService {
                 .orElseThrow(() -> new BusinessException(Code.NOT_FOUND_USER));
 
         // 2. Press 가져오기
-        Press press = pressRepository.findById(pressId)
-                .orElseThrow(() -> new BusinessException(Code.PRESS_NOT_FOUND));
+        Press press = pressService.getPressById(pressId);
 
         // 3. PressContentLine 가져오기
         PressContentLine pressContentLine = pressContentLineRepository.findByPressIdAndLineNumber(
@@ -139,9 +140,7 @@ public class LearnedPressContentLineService {
                 .orElseThrow(() -> new BusinessException(Code.NOT_FOUND_USER));
 
         // 2. Press 가져오기
-        Press press = pressRepository.findById(pressId)
-                .orElseThrow(() -> new BusinessException(Code.PRESS_NOT_FOUND));
-
+        Press press = pressService.getPressById(pressId);
 
         // 3. PressContentLine 가져오기
         PressContentLine pressContentLine = pressContentLineRepository.findByPressIdAndLineNumber(

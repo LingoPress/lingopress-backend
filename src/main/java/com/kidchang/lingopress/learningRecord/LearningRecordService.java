@@ -39,10 +39,7 @@ public class LearningRecordService {
         // userId, date로 조회
         // 요청한 아이디와 jwt 아이디가 다르면 에러
         Long userId = SecurityUtil.getUserId();
-        LearningRecord.LearningRecordId id1 = new LearningRecord.LearningRecordId(userId, learningRecordRequest.startDate());
-        LearningRecord.LearningRecordId id2 = new LearningRecord.LearningRecordId(userId, learningRecordRequest.endDate());
-
-        List<LearningRecord> records = learningRecordRepository.findLearningRecordByIdBetween(id1, id2);
+        List<LearningRecord> records = learningRecordRepository.findLearningRecordByIdAndDateBetween(userId, learningRecordRequest.startDate(), learningRecordRequest.endDate());
         return records.stream()
                 .map(record -> LearningRecordResponse.from(record.getId().getUserId(), record.getLearningCount(), record.getId().getDate()))
                 .collect(Collectors.toList());
