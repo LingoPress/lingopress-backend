@@ -39,9 +39,13 @@ public class PressService {
         return pressResponse;
     }
 
-    public PressContentResponse getPressDetail(Long pressId) {
-        Press press = pressRepository.findById(pressId)
+    public Press getPressById(Long pressId) {
+        return pressRepository.findById(pressId)
                 .orElseThrow(() -> new BusinessException(Code.PRESS_NOT_FOUND));
+    }
+
+    public PressContentResponse getPressDetail(Long pressId) {
+        Press press = getPressById(pressId);
 
         // 혹시 로그인되어있으면, 해당 유저가 번역한 정보가 있는지 확인하고 매칭시켜야함.
         Long userId = SecurityUtil.getUserId();
