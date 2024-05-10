@@ -209,8 +209,12 @@ public class LearnedPressContentLineService {
 
         ApiUsageTracker tracker = apiUsageTrackerService.createOrUpdateApiUsageTracker(userId);
 
-        return aiTextSimilarityAnalysisClient.checkPressContentLineSimilarity(request);
+        TextSimilarityAnalysisResponse textSimilarityAnalysisResponse = aiTextSimilarityAnalysisClient.checkPressContentLineSimilarity(request);
 
+        return TextSimilarityAnalysisResponse.builder()
+                .similarity(textSimilarityAnalysisResponse.similarity())
+                .similarityApiUsage(tracker.getSimilarityApiCount())
+                .build();
     }
 
 
