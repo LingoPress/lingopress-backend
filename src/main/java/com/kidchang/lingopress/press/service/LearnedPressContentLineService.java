@@ -4,7 +4,7 @@ import com.kidchang.lingopress._base.constant.Code;
 import com.kidchang.lingopress._base.exception.BusinessException;
 import com.kidchang.lingopress._base.utils.SecurityUtil;
 import com.kidchang.lingopress.apiUsage.ApiUsageTracker;
-import com.kidchang.lingopress.apiUsage.ApiUsageTrackerRepository;
+import com.kidchang.lingopress.apiUsage.ApiUsageTrackerService;
 import com.kidchang.lingopress.client.AITextSimilarityAnalysisClient;
 import com.kidchang.lingopress.learningRecord.LearningRecordService;
 import com.kidchang.lingopress.press.PressRepository;
@@ -42,7 +42,7 @@ public class LearnedPressContentLineService {
     private final PressContentLineRepository pressContentLineRepository;
     private final LearningRecordService learningRecordService;
     private final AITextSimilarityAnalysisClient aiTextSimilarityAnalysisClient;
-    private final ApiUsageTrackerRepository apiUsageTrackerRepository;
+    private final ApiUsageTrackerService apiUsageTrackerService;
 
     private final PressService pressService;
 
@@ -204,25 +204,18 @@ public class LearnedPressContentLineService {
                 .build());
     }
 
-    @Transactional
     public TextSimilarityAnalysisResponse checkPressContentLineSimilarity(TextSimilarityAnalysisRequest request) {
         Long userId = SecurityUtil.getUserId();
-        ApiUsageTracker tracker = apiUsageTrackerRepository.findByUserIdAndRequestDate(userId, LocalDate.now());
 
-        if (tracker == null) {
-            tracker = ApiUsageTracker.builder()
-                    .userId(userId)
-                    .requestDate(LocalDate.now())
-                    .build();
-            apiUsageTrackerRepository.save(tracker);
-        }
+        ApiUsageTracker tracker = apiUsageTrackerService.createOrUpdateApiUsageTracker(userId);
 
-        int similarityApiCount = tracker.getSimilarityApiCount();
-        if (similarityApiCount >= 50) {
-            throw new BusinessException(Code.SIMILARITY_LIMIT_EXCEEDED);
-        }
-        tracker.setSimilarityApiCount(similarityApiCount + 1);
+        TextSimilarityAnalysisResponse textSimilarityAnalysisResponse = aiTextSimilarityAnalysisClient.checkPressContentLineSimilarity(request);
 
-        return aiTextSimilarityAnalysisClient.checkPressContentLineSimilarity(request);
+        return TextSimilarityAnalysisResponse.builder()
+                .similarity(textSimilarityAnalysisResponse.similarity())
+                .similarityApiUsage(tracker.getSimilarityApiCount())
+                .build();
     }
+
+
 }
