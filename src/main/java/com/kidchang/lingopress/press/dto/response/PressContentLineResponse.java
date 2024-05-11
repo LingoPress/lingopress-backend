@@ -13,7 +13,8 @@ public record PressContentLineResponse(
         String machineTranslatedLineText,
         String originalLineText,
         Boolean isCorrect,
-        String memo
+        String memo,
+        Long pressId
 ) {
 
     public static PressContentLineResponse from(PressContentLine pressContentLine) {
