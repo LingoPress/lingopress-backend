@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @NoArgsConstructor
 @Entity
@@ -37,6 +38,12 @@ public class User extends BaseTimeEntity {
 
     // providerId : 구글 로그인 한 유저의 고유 ID가 들어감
     private String providerId;
+
+    @Enumerated(EnumType.STRING)
+    
+    @Schema(description = "유저 상태", example = "ACTIVE")
+    @ColumnDefault("'ACTIVE'")
+    private UserStatusEnum status;
 
     @Builder
     public User(String username, String nickname, String password, String role, String provider, String providerId, String email) {

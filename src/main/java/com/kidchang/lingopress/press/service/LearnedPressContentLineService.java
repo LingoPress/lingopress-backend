@@ -201,6 +201,7 @@ public class LearnedPressContentLineService {
                 .originalLineText(learnedPressContentLine.getPressContentLine().getLineText())
                 .isCorrect(learnedPressContentLine.getIsCorrect())
                 .memo(learnedPressContentLine.getMemo())
+                .pressId(learnedPressContentLine.getPress().getId())
                 .build());
     }
 

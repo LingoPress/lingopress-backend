@@ -43,6 +43,8 @@ public enum Code {
     NOT_ACCESSIBLE_USER(HttpStatus.FORBIDDEN, "접근 권한이 없는 사용자입니다."),
     FAILED_TO_GET_GOOGLE_USER_INFO(HttpStatus.BAD_REQUEST, "구글 사용자 정보를 가져오는데 실패하였습니다."),
     FAILED_TO_GET_GOOGLE_ACCESS_TOKEN(HttpStatus.BAD_REQUEST, "구글 액세스 토큰을 가져오는데 실패하였습니다."),
+    FAILED_TO_DELETE_USER(HttpStatus.BAD_REQUEST, "유저 삭제에 실패하였습니다."),
+    USER_IS_INACTIVE(HttpStatus.FORBIDDEN, "비활성화된 사용자입니다. 관리자에게 문의하세요."),
 
 
     // Press
