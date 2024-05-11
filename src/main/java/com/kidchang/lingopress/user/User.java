@@ -40,6 +40,8 @@ public class User extends BaseTimeEntity {
     private String providerId;
 
     @Enumerated(EnumType.STRING)
+    
+    @Schema(description = "유저 상태", example = "ACTIVE")
     @ColumnDefault("'ACTIVE'")
     private UserStatusEnum status;
 

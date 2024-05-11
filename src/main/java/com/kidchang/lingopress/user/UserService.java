@@ -44,6 +44,10 @@ public class UserService {
     public JwtResponse loginWithGoogle(String authCode, String googleClientId, String googleClientSecret, String googleRedirectUrl) {
         GoogleUserInfoVO info = getGoogleUserInfo(authCode, googleClientId, googleClientSecret, googleRedirectUrl);
         User user = findOrCreateUser(info);
+        if (user.getStatus().equals(UserStatusEnum.INACTIVE)) {
+            throw new BusinessException(Code.USER_IS_INACTIVE);
+        }
+
         return jwtService.issueJwt(user);
 
     }
