@@ -55,5 +55,11 @@ public class UserController {
         return DataResponseDto.of(userService.loginWithGoogle(authCode, googleClientId, googleClientSecret, googleRedirectUrl));
     }
 
+    @Operation(summary = "탈퇴하기")
+    @PatchMapping("/delete")
+    public DataResponseDto<Boolean> deleteUser() {
+        return DataResponseDto.of(userService.deleteUser());
+    }
+
 
 }

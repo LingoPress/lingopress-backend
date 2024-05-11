@@ -2,6 +2,7 @@ package com.kidchang.lingopress.user;
 
 import com.kidchang.lingopress._base.constant.Code;
 import com.kidchang.lingopress._base.exception.BusinessException;
+import com.kidchang.lingopress._base.utils.SecurityUtil;
 import com.kidchang.lingopress.jwt.JwtService;
 import com.kidchang.lingopress.jwt.dto.request.JwtRequest;
 import com.kidchang.lingopress.jwt.dto.response.JwtResponse;
@@ -115,5 +116,16 @@ public class UserService {
         return accessEntity.getBody().getId_token();
     }
 
+    public Boolean deleteUser() {
+        Optional<User> userOptional = userRepository.findById(SecurityUtil.getUserId());
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setStatus(UserStatusEnum.INACTIVE);
+            userRepository.save(user);
+            return true;
+        } else {
+            throw new BusinessException(Code.FAILED_TO_DELETE_USER);
+        }
+    }
 
 }
