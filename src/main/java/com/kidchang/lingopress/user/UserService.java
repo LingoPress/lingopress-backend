@@ -101,9 +101,9 @@ public class UserService {
         }
 
         return GoogleUserInfoVO.builder()
-                .sub(resultEntity.getBody().getSub())
-                .email(resultEntity.getBody().getEmail())
-                .name(resultEntity.getBody().getName())
+                .sub(resultEntity.getBody().sub())
+                .email(resultEntity.getBody().email())
+                .name(resultEntity.getBody().name())
                 .build();
     }
 
@@ -121,7 +121,7 @@ public class UserService {
             throw new BusinessException(Code.FAILED_TO_GET_GOOGLE_ACCESS_TOKEN);
         }
 
-        return accessEntity.getBody().getId_token();
+        return accessEntity.getBody().id_token();
     }
 
     public Boolean deleteUser() {
