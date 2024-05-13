@@ -62,6 +62,9 @@ public class UserService {
     }
 
     private User createNewUser(GoogleUserInfoVO info) {
+        // TODO: 나중에는 가입 시 디스코드에 알림보내도록
+        // 로그는 혹시나 에러가 발생해서 회원가입을 못해도 나중에 문제 해결후 연락할 수 있도록
+        log.info("create new user : {}", info);
         return User.builder()
                 .provider("google")
                 .providerId(info.getSub())
