@@ -3,6 +3,7 @@ package com.kidchang.lingopress.press.service;
 import com.kidchang.lingopress._base.constant.Code;
 import com.kidchang.lingopress._base.exception.BusinessException;
 import com.kidchang.lingopress._base.utils.SecurityUtil;
+import com.kidchang.lingopress.apiUsage.ApiUsageEnum;
 import com.kidchang.lingopress.apiUsage.ApiUsageTracker;
 import com.kidchang.lingopress.apiUsage.ApiUsageTrackerService;
 import com.kidchang.lingopress.client.AITextSimilarityAnalysisClient;
@@ -208,7 +209,7 @@ public class LearnedPressContentLineService {
     public TextSimilarityAnalysisResponse checkPressContentLineSimilarity(TextSimilarityAnalysisRequest request) {
         Long userId = SecurityUtil.getUserId();
 
-        ApiUsageTracker tracker = apiUsageTrackerService.createOrUpdateApiUsageTracker(userId);
+        ApiUsageTracker tracker = apiUsageTrackerService.createOrUpdateApiUsageTracker(userId, ApiUsageEnum.SIMILARITY);
 
         TextSimilarityAnalysisResponse textSimilarityAnalysisResponse = aiTextSimilarityAnalysisClient.checkPressContentLineSimilarity(request);
 
