@@ -43,10 +43,10 @@ public class User extends BaseTimeEntity {
 
     @Schema(description = "유저 상태", example = "ACTIVE")
     @ColumnDefault("'ACTIVE'")
-    private UserStatusEnum status;
+    private UserStatusEnum status = UserStatusEnum.ACTIVE;
 
     @Builder
-    public User(String username, String nickname, String password, String role, String provider, String providerId, String email, UserStatusEnum status) {
+    public User(String username, String nickname, String password, String role, String provider, String providerId, String email) {
         this.username = username;
         this.nickname = nickname;
         this.password = password;
@@ -54,7 +54,6 @@ public class User extends BaseTimeEntity {
         this.provider = provider;
         this.providerId = providerId;
         this.email = email;
-        this.status = status;
     }
 
 }

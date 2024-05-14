@@ -72,7 +72,6 @@ public class UserService {
                 .role("ROLE_USER")
                 .email(info.getEmail())
                 .username("g_" + info.getSub())
-                .status(UserStatusEnum.ACTIVE)
                 .build();
     }
 
