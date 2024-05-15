@@ -1,17 +1,13 @@
 package com.kidchang.lingopress.press.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class PressContentLine {
 
     @Id
@@ -25,5 +21,14 @@ public class PressContentLine {
     private String lineText;
     @Column(columnDefinition = "TEXT")
     private String translatedLineText;
+
+    @Builder
+    public PressContentLine(Long id, Press press, Integer lineNumber, String lineText, String translatedLineText) {
+        this.id = id;
+        this.press = press;
+        this.lineNumber = lineNumber;
+        this.lineText = lineText;
+        this.translatedLineText = translatedLineText;
+    }
 
 }
