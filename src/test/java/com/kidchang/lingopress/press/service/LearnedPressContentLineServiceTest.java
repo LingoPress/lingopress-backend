@@ -90,6 +90,8 @@ class LearnedPressContentLineServiceTest {
         // 댓글만 작성된 LearnedPressContentLine
         LearnedPressContentLine newLearnedPressContentLine = PressSteps.getNewLearnedPressContentLineOnlyMemo(newLearnedPress, newPressContentLine, lineNumber, newPress, newUser);
 
+        given(pressService.getPressById(pressId))
+                .willReturn(newPress);
 
         given(userRepository.findById(newUser.getId()))
                 .willReturn(Optional.of(newUser));
@@ -152,6 +154,8 @@ class LearnedPressContentLineServiceTest {
         // 댓글만 작성된 LearnedPressContentLine
         LearnedPressContentLine newLearnedPressContentLine = PressSteps.getNewLearnedPressContentLineOnlyMemo(newLearnedPress, newPressContentLine, lineNumber, newPress, newUser);
 
+        given(pressService.getPressById(pressId))
+                .willReturn(newPress);
 
         given(userRepository.findById(newUser.getId()))
                 .willReturn(Optional.of(newUser));
@@ -210,6 +214,8 @@ class LearnedPressContentLineServiceTest {
         // 댓글만 작성된 LearnedPressContentLine
         LearnedPressContentLine newLearnedPressContentLine = PressSteps.getNewLearnedPressContentLineOnlyMemo(newLearnedPress, newPressContentLine, lineNumber, newPress, newUser);
 
+        given(pressService.getPressById(pressId))
+                .willReturn(newPress);
 
         given(userRepository.findById(newUser.getId()))
                 .willReturn(Optional.of(newUser));
@@ -269,6 +275,8 @@ class LearnedPressContentLineServiceTest {
         // 댓글만 작성된 LearnedPressContentLine
         LearnedPressContentLine newLearnedPressContentLine = PressSteps.getNewLearnedPressContentLineOnlyMemo(newLearnedPress, newPressContentLine, lineNumber, newPress, newUser);
 
+        given(pressService.getPressById(pressId))
+                .willReturn(newPress);
 
         given(userRepository.findById(newUser.getId()))
                 .willReturn(Optional.of(newUser));
