@@ -58,7 +58,6 @@ public class LearnedPressContentLineService {
         return buildPressContentLineResponse(pressContentLine, learnedPressContentLine);
     }
 
-    // Helper methods
     private User getUser() {
         return userRepository.findById(SecurityUtil.getUserId())
                 .orElseThrow(() -> new BusinessException(Code.NOT_FOUND_USER));
@@ -156,15 +155,19 @@ public class LearnedPressContentLineService {
         Press press = getPress(pressId);
 
         // 3. PressContentLine 가져오기
-        PressContentLine pressContentLine = pressContentLineRepository.findByPressIdAndLineNumber(
-                        pressId,
-                        request.contentLineNumber())
-                .orElseThrow(() -> new BusinessException(Code.PRESS_NOT_FOUND));
+        PressContentLine pressContentLine = getPressContentLine(pressId, request.contentLineNumber());
 
         // 4. LearnedPress 가져오기
-        LearnedPress learnedPress = learnPressService.findOrCreateLearnedPress(user, press);
+        LearnedPress learnedPress = getOrCreateLearnedPress(user, press);
 
         // 5. 기존에 LearnedPressContentLine 있는지 확인
+        LearnedPressContentLine learnedPressContentLine = getOrUpdateMemo(request, learnedPress, pressContentLine, press, user);
+
+        // 기록된 LearnedPressContentLine을 가져오고, 없으면 isCorrect를 null로 설정해서 가져온다.
+        return buildMemoResponse(learnedPressContentLine);
+    }
+
+    private LearnedPressContentLine getOrUpdateMemo(TranslateContentLineMemoRequest request, LearnedPress learnedPress, PressContentLine pressContentLine, Press press, User user) {
         LearnedPressContentLine learnedPressContentLine = learnedPressContentLineRepository
                 .findByLearnedPressAndPressContentLine(learnedPress, pressContentLine)
                 .orElse(null);
@@ -187,14 +190,14 @@ public class LearnedPressContentLineService {
             // 메모 저장
             learnedPressContentLine.setMemo(request.memo());
         }
+        return learnedPressContentLine;
+    }
 
-
-        // 기록된 LearnedPressContentLine을 가져오고, 없으면 isCorrect를 null로 설정해서 가져온다.
+    private PressContentLineResponse buildMemoResponse(LearnedPressContentLine learnedPressContentLine) {
         return PressContentLineResponse.builder()
                 .id(learnedPressContentLine.getId())
                 .memo(learnedPressContentLine.getMemo())
                 .build();
-
     }
 
     public Slice<PressContentLineResponse> getMemoList(Pageable pageable) {
@@ -230,6 +233,4 @@ public class LearnedPressContentLineService {
                 .similarityApiUsage(tracker.getSimilarityApiCount())
                 .build();
     }
-
-
 }
