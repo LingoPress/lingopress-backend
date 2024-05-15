@@ -49,8 +49,7 @@ public class LearnedPressContentLineService {
 
     @Transactional
     public PressContentLineResponse checkPressContentLine(TranslateContentLineRequest request) {
-        Long userId = SecurityUtil.getUserId();
-        User user = getUser(userId);
+        User user = getUser();
         Press press = getPress(request.pressId());
         PressContentLine pressContentLine = getPressContentLine(press.getId(), request.contentLineNumber());
         LearnedPress learnedPress = getOrCreateLearnedPress(user, press);
@@ -60,8 +59,8 @@ public class LearnedPressContentLineService {
     }
 
     // Helper methods
-    private User getUser(Long userId) {
-        return userRepository.findById(userId)
+    private User getUser() {
+        return userRepository.findById(SecurityUtil.getUserId())
                 .orElseThrow(() -> new BusinessException(Code.NOT_FOUND_USER));
     }
 
@@ -152,12 +151,9 @@ public class LearnedPressContentLineService {
         // TODO duplicate code 줄이기
         Long pressId = request.pressId();
         // 1. User 가져오기
-        Long userId = SecurityUtil.getUserId();
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessException(Code.NOT_FOUND_USER));
-
+        User user = getUser();
         // 2. Press 가져오기
-        Press press = pressService.getPressById(pressId);
+        Press press = getPress(pressId);
 
         // 3. PressContentLine 가져오기
         PressContentLine pressContentLine = pressContentLineRepository.findByPressIdAndLineNumber(
