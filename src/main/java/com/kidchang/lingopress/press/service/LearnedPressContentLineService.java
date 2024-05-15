@@ -112,6 +112,9 @@ public class LearnedPressContentLineService {
                     learnedPress.decreaseLearnedContentLineCount();
                 }
             } else {
+                if (request.isCorrect()) {
+                    learnedPress.increaseLearnedContentLineCount();
+                }
                 learnedPress.increaseTranslatedContentLineCount();
             }
 
