@@ -12,6 +12,7 @@ import com.kidchang.lingopress.press.repository.LearnedPressContentLineRepositor
 import com.kidchang.lingopress.press.repository.PressContentLineRepository;
 import com.kidchang.lingopress.user.User;
 import com.kidchang.lingopress.user.UserRepository;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,9 +50,19 @@ class LearnedPressContentLineServiceTest {
     @InjectMocks
     private LearnedPressContentLineService learnedPressContentLineService;
 
+    @NotNull
+    private static TranslateContentLineRequest get뉴스1번째줄_옳음(Long pressId, int lineNumber) {
+        return new TranslateContentLineRequest(pressId, lineNumber, "hello", true);
+    }
+
+    @NotNull
+    private static TranslateContentLineRequest get뉴스1번째줄_틀림(Long pressId, int lineNumber) {
+        return new TranslateContentLineRequest(pressId, lineNumber, "hello", false);
+    }
+
     @Test
     @DisplayName("특정 줄 메모 작성후 옳음->틀림")
-    void checkPressContentLine() {
+    void 특정줄_메모_맞_틀() {
         // given
 
         // SecurityContext에 모의 Authentication 객체 설정
@@ -61,8 +72,8 @@ class LearnedPressContentLineServiceTest {
 
         Long pressId = 1L;
         int lineNumber = 1;
-        TranslateContentLineRequest 뉴스1번째줄_옳음 = new TranslateContentLineRequest(pressId, lineNumber, "hello", true);
-        TranslateContentLineRequest 뉴스1번째줄_틀림 = new TranslateContentLineRequest(pressId, lineNumber, "hello", false);
+        TranslateContentLineRequest 뉴스1번째줄_옳음 = get뉴스1번째줄_옳음(pressId, lineNumber);
+        TranslateContentLineRequest 뉴스1번째줄_틀림 = get뉴스1번째줄_틀림(pressId, lineNumber);
 
 
         User newUser = getNewUser();
@@ -111,5 +122,182 @@ class LearnedPressContentLineServiceTest {
 
     }
 
+    @Test
+    @DisplayName("특정 줄 메모 작성후 틀림->옳음")
+    void 특정줄_메모_틀_맞() {
+        // given
+
+        // SecurityContext에 모의 Authentication 객체 설정
+        Authentication authentication = new UsernamePasswordAuthenticationToken(1L, "password");
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
+        Long pressId = 1L;
+        int lineNumber = 1;
+        TranslateContentLineRequest 뉴스1번째줄_옳음 = get뉴스1번째줄_옳음(pressId, lineNumber);
+        TranslateContentLineRequest 뉴스1번째줄_틀림 = get뉴스1번째줄_틀림(pressId, lineNumber);
+
+
+        User newUser = getNewUser();
+
+
+        Press newPress = PressSteps.getNewPress(pressId);
+
+
+        PressContentLine newPressContentLine = PressSteps.getNewPressContentLine(newPress);
+
+
+        LearnedPress newLearnedPress = PressSteps.getNewLearnedPress(newUser, newPress);
+
+        // 댓글만 작성된 LearnedPressContentLine
+        LearnedPressContentLine newLearnedPressContentLine = PressSteps.getNewLearnedPressContentLineOnlyMemo(newLearnedPress, newPressContentLine, lineNumber, newPress, newUser);
+
+
+        given(userRepository.findById(newUser.getId()))
+                .willReturn(Optional.of(newUser));
+
+        given(learnedPressContentLineRepository.findByLearnedPressAndPressContentLine(
+                newLearnedPress,
+                newPressContentLine))
+                .willReturn(Optional.of(newLearnedPressContentLine));
+
+        given(pressContentLineRepository.findByPressIdAndLineNumber(
+                pressId,
+                1))
+                .willReturn(Optional.of(newPressContentLine));
+
+        given(learnPressService.findOrCreateLearnedPress(any(), any()))
+                .willReturn(newLearnedPress);
+
+        // when
+        learnedPressContentLineService.checkPressContentLine(뉴스1번째줄_틀림);
+        PressContentLineResponse pressContentLineResponse = learnedPressContentLineService.checkPressContentLine(뉴스1번째줄_옳음);
+
+        // then
+        LearnedPress learnedPress = learnPressService.findOrCreateLearnedPress(newUser, newPress);
+
+        assertThat(learnedPress.getLearnedContentLine()).isEqualTo(1);
+        assertThat(learnedPress.getTranslatedContentLine()).isEqualTo(1);
+        assertThat(pressContentLineResponse.isCorrect()).isTrue();
+        assertThat(pressContentLineResponse.userTranslatedLineText()).isEqualTo("hello");
+    }
+
+    @Test
+    @DisplayName("특정 줄 메모 작성후 틀림->틀림->틀림")
+    void 특정줄_메모_틀_틀_틀() {
+        // given
+
+        // SecurityContext에 모의 Authentication 객체 설정
+        Authentication authentication = new UsernamePasswordAuthenticationToken(1L, "password");
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
+        Long pressId = 1L;
+        int lineNumber = 1;
+        TranslateContentLineRequest 뉴스1번째줄_틀림 = get뉴스1번째줄_틀림(pressId, lineNumber);
+
+        User newUser = getNewUser();
+
+
+        Press newPress = PressSteps.getNewPress(pressId);
+
+
+        PressContentLine newPressContentLine = PressSteps.getNewPressContentLine(newPress);
+
+
+        LearnedPress newLearnedPress = PressSteps.getNewLearnedPress(newUser, newPress);
+
+        // 댓글만 작성된 LearnedPressContentLine
+        LearnedPressContentLine newLearnedPressContentLine = PressSteps.getNewLearnedPressContentLineOnlyMemo(newLearnedPress, newPressContentLine, lineNumber, newPress, newUser);
+
+
+        given(userRepository.findById(newUser.getId()))
+                .willReturn(Optional.of(newUser));
+
+        given(learnedPressContentLineRepository.findByLearnedPressAndPressContentLine(
+                newLearnedPress,
+                newPressContentLine))
+                .willReturn(Optional.of(newLearnedPressContentLine));
+
+        given(pressContentLineRepository.findByPressIdAndLineNumber(
+                pressId,
+                1))
+                .willReturn(Optional.of(newPressContentLine));
+
+        given(learnPressService.findOrCreateLearnedPress(any(), any()))
+                .willReturn(newLearnedPress);
+
+        // when
+        learnedPressContentLineService.checkPressContentLine(뉴스1번째줄_틀림);
+        learnedPressContentLineService.checkPressContentLine(뉴스1번째줄_틀림);
+        PressContentLineResponse pressContentLineResponse = learnedPressContentLineService.checkPressContentLine(뉴스1번째줄_틀림);
+
+        // then
+        LearnedPress learnedPress = learnPressService.findOrCreateLearnedPress(newUser, newPress);
+
+        assertThat(learnedPress.getLearnedContentLine()).isEqualTo(0);
+        assertThat(learnedPress.getTranslatedContentLine()).isEqualTo(1);
+        assertThat(pressContentLineResponse.isCorrect()).isFalse();
+        assertThat(pressContentLineResponse.userTranslatedLineText()).isEqualTo("hello");
+    }
+
+    @Test
+    @DisplayName("특정 줄 메모 작성후 맞음->맞음->맞음")
+    void 특정줄_메모_맞_맞_맞() {
+        // given
+
+        // SecurityContext에 모의 Authentication 객체 설정
+        Authentication authentication = new UsernamePasswordAuthenticationToken(1L, "password");
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
+        Long pressId = 1L;
+        int lineNumber = 1;
+        TranslateContentLineRequest 뉴스1번째줄_옳음 = get뉴스1번째줄_옳음(pressId, lineNumber);
+
+        User newUser = getNewUser();
+
+
+        Press newPress = PressSteps.getNewPress(pressId);
+
+
+        PressContentLine newPressContentLine = PressSteps.getNewPressContentLine(newPress);
+
+
+        LearnedPress newLearnedPress = PressSteps.getNewLearnedPress(newUser, newPress);
+
+        // 댓글만 작성된 LearnedPressContentLine
+        LearnedPressContentLine newLearnedPressContentLine = PressSteps.getNewLearnedPressContentLineOnlyMemo(newLearnedPress, newPressContentLine, lineNumber, newPress, newUser);
+
+
+        given(userRepository.findById(newUser.getId()))
+                .willReturn(Optional.of(newUser));
+
+        given(learnedPressContentLineRepository.findByLearnedPressAndPressContentLine(
+                newLearnedPress,
+                newPressContentLine))
+                .willReturn(Optional.of(newLearnedPressContentLine));
+
+        given(pressContentLineRepository.findByPressIdAndLineNumber(
+                pressId,
+                1))
+                .willReturn(Optional.of(newPressContentLine));
+
+        given(learnPressService.findOrCreateLearnedPress(any(), any()))
+                .willReturn(newLearnedPress);
+
+        // when
+        learnedPressContentLineService.checkPressContentLine(뉴스1번째줄_옳음);
+        learnedPressContentLineService.checkPressContentLine(뉴스1번째줄_옳음);
+        PressContentLineResponse pressContentLineResponse = learnedPressContentLineService.checkPressContentLine(뉴스1번째줄_옳음);
+
+        // then
+        LearnedPress learnedPress = learnPressService.findOrCreateLearnedPress(newUser, newPress);
+
+        assertThat(learnedPress.getLearnedContentLine()).isEqualTo(1);
+        assertThat(learnedPress.getTranslatedContentLine()).isEqualTo(1);
+        assertThat(pressContentLineResponse.isCorrect()).isTrue();
+        assertThat(pressContentLineResponse.userTranslatedLineText()).isEqualTo("hello");
+    }
 
 }
