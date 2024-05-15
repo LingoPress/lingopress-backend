@@ -49,81 +49,94 @@ public class LearnedPressContentLineService {
 
     @Transactional
     public PressContentLineResponse checkPressContentLine(TranslateContentLineRequest request) {
-        Long pressId = request.pressId();
-        // 1. User 가져오기
         Long userId = SecurityUtil.getUserId();
-        User user = userRepository.findById(userId)
+        User user = getUser(userId);
+        Press press = getPress(request.pressId());
+        PressContentLine pressContentLine = getPressContentLine(press.getId(), request.contentLineNumber());
+        LearnedPress learnedPress = getOrCreateLearnedPress(user, press);
+        LearnedPressContentLine learnedPressContentLine = getOrCreateLearnedPressContentLine(learnedPress, pressContentLine, user, request);
+
+        return buildPressContentLineResponse(pressContentLine, learnedPressContentLine);
+    }
+
+    // Helper methods
+    private User getUser(Long userId) {
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(Code.NOT_FOUND_USER));
+    }
 
-        // 2. Press 가져오기
-        Press press = pressService.getPressById(pressId);
+    private Press getPress(Long pressId) {
+        return pressService.getPressById(pressId);
+    }
 
-        // 3. PressContentLine 가져오기
-        PressContentLine pressContentLine = pressContentLineRepository.findByPressIdAndLineNumber(
-                        pressId,
-                        request.contentLineNumber())
+    private PressContentLine getPressContentLine(Long pressId, Integer contentLineNumber) {
+        return pressContentLineRepository.findByPressIdAndLineNumber(pressId, contentLineNumber)
                 .orElseThrow(() -> new BusinessException(Code.PRESS_NOT_FOUND));
+    }
 
-        // 4. LearnedPress 가져오기
-        LearnedPress learnedPress = learnPressService.findOrCreateLearnedPress(user, press);
+    private LearnedPress getOrCreateLearnedPress(User user, Press press) {
+        return learnPressService.findOrCreateLearnedPress(user, press);
+    }
 
-        // 5. 기존에 LearnedPressContentLine 있는지 확인
+    private LearnedPressContentLine getOrCreateLearnedPressContentLine(LearnedPress learnedPress, PressContentLine pressContentLine, User user, TranslateContentLineRequest request) {
         LearnedPressContentLine learnedPressContentLine = learnedPressContentLineRepository
                 .findByLearnedPressAndPressContentLine(learnedPress, pressContentLine)
                 .orElse(null);
 
-        // 학습한 문장수 카운트
-        // 만약 LearnedPressContentLine이 없거나, isCorrect가 null이라면(메모만 이용), 번역한 문장 수를 증가시킨다.
         if (learnedPressContentLine == null || learnedPressContentLine.getIsCorrect() == null) {
-            LocalDate date = LocalDate.now();
-            learningRecordService.increaseLearningRecord(userId, date);
+            increaseLearningRecord(user.getId(), LocalDate.now());
         }
 
         if (learnedPressContentLine == null) {
-            learnedPressContentLine = LearnedPressContentLine.builder()
-                    .learnedPress(learnedPress)
-                    .pressContentLine(pressContentLine)
-                    .isCorrect(request.isCorrect())
-                    .lineNumber(request.contentLineNumber())
-                    .press(press)
-                    .user(user)
-                    .userTranslatedLine(request.translateText())
-                    .build();
-            learnedPressContentLineRepository.save(learnedPressContentLine);
-            learnedPress.increaseTranslatedContentLineCount();
-            if (request.isCorrect()) {
-                learnedPress.increaseLearnedContentLineCount();
-            }
-
-            // 문장이 맞은지 여부에 상관없이 문장을 처음 해석하면 카운트 증가
+            learnedPressContentLine = createNewLearnedPressContentLine(learnedPress, pressContentLine, user, request);
         } else {
-            // 이미 있는 문장이라면, 기존 카운트 내역 제거
-//            if (learnedPressContentLine.getIsCorrect() != request.isCorrect()) {
-//                learnedPress.decreaseLearnedContentLineCount();
-//            }
-
-            if (learnedPressContentLine.getIsCorrect() != null) {
-                // 틀렸다가 맞았을 때
-                if (!learnedPressContentLine.getIsCorrect() && request.isCorrect()) {
-                    learnedPress.increaseLearnedContentLineCount();
-                }
-                // 맞았다가 틀렸을 때
-                if (learnedPressContentLine.getIsCorrect() && !request.isCorrect()) {
-                    learnedPress.decreaseLearnedContentLineCount();
-                }
-            } else {
-                if (request.isCorrect()) {
-                    learnedPress.increaseLearnedContentLineCount();
-                }
-                learnedPress.increaseTranslatedContentLineCount();
-            }
-
-            // 만약 checkPressContentLine메서드를 실행할 때 isCorrect를 안보내면 에러 발생
-            learnedPressContentLine.setIsCorrect(request.isCorrect());
-            learnedPressContentLine.setUserTranslatedLine(request.translateText());
+            updateLearnedPressContentLine(learnedPressContentLine, request);
         }
 
+        return learnedPressContentLine;
+    }
 
+    private void increaseLearningRecord(Long userId, LocalDate date) {
+        learningRecordService.increaseLearningRecord(userId, date);
+    }
+
+    private LearnedPressContentLine createNewLearnedPressContentLine(LearnedPress learnedPress, PressContentLine pressContentLine, User user, TranslateContentLineRequest request) {
+        LearnedPressContentLine newLearnedPressContentLine = LearnedPressContentLine.builder()
+                .learnedPress(learnedPress)
+                .pressContentLine(pressContentLine)
+                .isCorrect(request.isCorrect())
+                .lineNumber(request.contentLineNumber())
+                .press(pressContentLine.getPress())
+                .user(user)
+                .userTranslatedLine(request.translateText())
+                .build();
+        learnedPressContentLineRepository.save(newLearnedPressContentLine);
+        learnedPress.increaseTranslatedContentLineCount();
+        if (request.isCorrect()) {
+            learnedPress.increaseLearnedContentLineCount();
+        }
+        return newLearnedPressContentLine;
+    }
+
+    private void updateLearnedPressContentLine(LearnedPressContentLine learnedPressContentLine, TranslateContentLineRequest request) {
+        if (learnedPressContentLine.getIsCorrect() != null) {
+            if (!learnedPressContentLine.getIsCorrect() && request.isCorrect()) {
+                learnedPressContentLine.getLearnedPress().increaseLearnedContentLineCount();
+            }
+            if (learnedPressContentLine.getIsCorrect() && !request.isCorrect()) {
+                learnedPressContentLine.getLearnedPress().decreaseLearnedContentLineCount();
+            }
+        } else {
+            if (request.isCorrect()) {
+                learnedPressContentLine.getLearnedPress().increaseLearnedContentLineCount();
+            }
+            learnedPressContentLine.getLearnedPress().increaseTranslatedContentLineCount();
+        }
+        learnedPressContentLine.setIsCorrect(request.isCorrect());
+        learnedPressContentLine.setUserTranslatedLine(request.translateText());
+    }
+
+    private PressContentLineResponse buildPressContentLineResponse(PressContentLine pressContentLine, LearnedPressContentLine learnedPressContentLine) {
         return PressContentLineResponse.builder()
                 .originalLineText(pressContentLine.getLineText())
                 .userTranslatedLineText(learnedPressContentLine.getUserTranslatedLine())
@@ -131,8 +144,8 @@ public class LearnedPressContentLineService {
                 .isCorrect(learnedPressContentLine.getIsCorrect())
                 .userTranslatedLineText(learnedPressContentLine.getUserTranslatedLine())
                 .build();
-
     }
+
 
     @Transactional
     public PressContentLineResponse writePressContentLineMemo(TranslateContentLineMemoRequest request) {
