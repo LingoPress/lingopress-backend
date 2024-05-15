@@ -2,6 +2,7 @@ package com.kidchang.lingopress.press.service;
 
 import com.kidchang.lingopress.learningRecord.LearningRecordService;
 import com.kidchang.lingopress.press.PressSteps;
+import com.kidchang.lingopress.press.dto.request.TranslateContentLineMemoRequest;
 import com.kidchang.lingopress.press.dto.request.TranslateContentLineRequest;
 import com.kidchang.lingopress.press.dto.response.PressContentLineResponse;
 import com.kidchang.lingopress.press.entity.LearnedPress;
@@ -58,6 +59,92 @@ class LearnedPressContentLineServiceTest {
     @NotNull
     private static TranslateContentLineRequest get뉴스1번째줄_틀림(Long pressId, int lineNumber) {
         return new TranslateContentLineRequest(pressId, lineNumber, "hello", false);
+    }
+
+
+    @Test
+    @DisplayName("특정 줄 메모 작성 후 수정")
+    void 특정줄_메모_작성_후_수정() {
+        // given
+
+        // SecurityContext에 모의 Authentication 객체 설정
+        Authentication authentication = new UsernamePasswordAuthenticationToken(1L, "password");
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        Long pressId = 1L;
+        int lineNumber = 1;
+        TranslateContentLineMemoRequest 뉴스1번째줄_메모_수정 = new TranslateContentLineMemoRequest(pressId, lineNumber, "hello");
+        User newUser = getNewUser();
+        Press newPress = PressSteps.getNewPress(pressId);
+        PressContentLine newPressContentLine = PressSteps.getNewPressContentLine(newPress);
+        LearnedPress newLearnedPress = PressSteps.getNewLearnedPress(newUser, newPress);
+        LearnedPressContentLine newLearnedPressContentLine = PressSteps.getNewLearnedPressContentLineOnlyMemo(newLearnedPress, newPressContentLine, lineNumber, newPress, newUser);
+
+        given(learnedPressContentLineRepository.findByLearnedPressAndPressContentLine(
+                newLearnedPress,
+                newPressContentLine))
+                .willReturn(Optional.of(newLearnedPressContentLine));
+        given(pressService.getPressById(pressId))
+                .willReturn(newPress);
+
+        given(userRepository.findById(newUser.getId()))
+                .willReturn(Optional.of(newUser));
+
+        given(pressContentLineRepository.findByPressIdAndLineNumber(
+                pressId,
+                1))
+                .willReturn(Optional.of(newPressContentLine));
+
+        given(learnPressService.findOrCreateLearnedPress(any(), any()))
+                .willReturn(newLearnedPress);
+        // 댓글 작성하기
+        PressContentLineResponse pressContentLineResponse = learnedPressContentLineService.writePressContentLineMemo(뉴스1번째줄_메모_수정);
+
+
+        // then
+
+        assertThat(pressContentLineResponse.memo()).isEqualTo("hello");
+    }
+
+
+    @Test
+    @DisplayName("특정 줄 메모 작성")
+    void 특정줄_메모_작성() {
+        // given
+
+        // SecurityContext에 모의 Authentication 객체 설정
+        Authentication authentication = new UsernamePasswordAuthenticationToken(1L, "password");
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        Long pressId = 1L;
+        int lineNumber = 1;
+        TranslateContentLineRequest 뉴스1번째줄_옳음 = get뉴스1번째줄_옳음(pressId, lineNumber);
+        TranslateContentLineMemoRequest 뉴스1번째줄_메모 = new TranslateContentLineMemoRequest(pressId, lineNumber, "hello_memooooo");
+        User newUser = getNewUser();
+        Press newPress = PressSteps.getNewPress(pressId);
+        PressContentLine newPressContentLine = PressSteps.getNewPressContentLine(newPress);
+        LearnedPress newLearnedPress = PressSteps.getNewLearnedPress(newUser, newPress);
+
+
+        given(pressService.getPressById(pressId))
+                .willReturn(newPress);
+
+        given(userRepository.findById(newUser.getId()))
+                .willReturn(Optional.of(newUser));
+
+        given(pressContentLineRepository.findByPressIdAndLineNumber(
+                pressId,
+                1))
+                .willReturn(Optional.of(newPressContentLine));
+
+        given(learnPressService.findOrCreateLearnedPress(any(), any()))
+                .willReturn(newLearnedPress);
+        // 댓글 작성하기
+        PressContentLineResponse pressContentLineResponse = learnedPressContentLineService.writePressContentLineMemo(뉴스1번째줄_메모);
+
+        // then
+
+        assertThat(pressContentLineResponse.memo()).isEqualTo("hello_memooooo");
     }
 
     @Test
