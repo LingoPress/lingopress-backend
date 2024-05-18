@@ -7,6 +7,7 @@ import com.kidchang.lingopress.jwt.JwtService;
 import com.kidchang.lingopress.jwt.dto.request.JwtRequest;
 import com.kidchang.lingopress.jwt.dto.response.JwtResponse;
 import com.kidchang.lingopress.user.dto.request.GoogleRequest;
+import com.kidchang.lingopress.user.dto.request.UserLanguageDto;
 import com.kidchang.lingopress.user.dto.response.GoogleInfResponse;
 import com.kidchang.lingopress.user.dto.response.GoogleResponse;
 import com.kidchang.lingopress.user.vo.GoogleUserInfoVO;
@@ -135,4 +136,16 @@ public class UserService {
         }
     }
 
+    public boolean updateUserLanguage(UserLanguageDto userLanguageDto) {
+        Optional<User> userOptional = userRepository.findById(SecurityUtil.getUserId());
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setUser_language(userLanguageDto.user_language());
+            user.setTarget_language(userLanguageDto.target_language());
+            userRepository.save(user);
+            return true;
+        } else {
+            throw new BusinessException(Code.FAILED_TO_UPDATE_USER_LANGUAGE);
+        }
+    }
 }
