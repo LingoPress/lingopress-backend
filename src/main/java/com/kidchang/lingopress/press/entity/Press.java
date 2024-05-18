@@ -2,6 +2,7 @@ package com.kidchang.lingopress.press.entity;
 
 import com.kidchang.lingopress._base.constant.CategoryEnum;
 import com.kidchang.lingopress._base.constant.LanguageEnum;
+import com.kidchang.lingopress._base.utils.LanguageEnumConverter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -37,7 +38,7 @@ public class Press {
     private String publisher;
     @Schema(description = "공개여부")
     private String accessLevel;
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = LanguageEnumConverter.class)
     private LanguageEnum language;
 
     @Builder
