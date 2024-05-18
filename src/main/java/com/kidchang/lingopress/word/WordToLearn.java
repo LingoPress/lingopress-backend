@@ -36,7 +36,7 @@ public class WordToLearn {
     public WordToLearn(
             // User user, Press press,
             Long userId, Long pressId, String word, String originalLineText,
-            Integer lineNumber, String translatedWord) {
+            Integer lineNumber, String translatedWord, LanguageEnum language) {
         // this.user = user;
         // this.press = press;
         this.userId = userId;
@@ -45,6 +45,7 @@ public class WordToLearn {
         this.originalLineText = originalLineText;
         this.lineNumber = lineNumber;
         this.translatedWord = translatedWord;
+        this.language = language;
     }
 
     public void updateTranslatedWord(String word) {

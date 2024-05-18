@@ -1,5 +1,6 @@
 package com.kidchang.lingopress.user;
 
+import com.kidchang.lingopress._base.constant.LanguageEnum;
 import org.jetbrains.annotations.NotNull;
 
 public class UserSteps {
@@ -14,7 +15,9 @@ public class UserSteps {
                 "ROLE_USER",
                 "test",
                 "test",
-                UserStatusEnum.ACTIVE
+                UserStatusEnum.ACTIVE,
+                LanguageEnum.KOREAN,
+                LanguageEnum.ENGLISH
         );
     }
 }

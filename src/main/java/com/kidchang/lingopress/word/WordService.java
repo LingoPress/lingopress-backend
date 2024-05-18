@@ -54,6 +54,7 @@ public class WordService {
                 // .press(press)
                 .pressId(request.pressId())
                 .lineNumber(request.lineNumber())
+                .language(request.language())
                 .translatedWord(translateTextResponse.getTranslatedText())
                 .build();
 
