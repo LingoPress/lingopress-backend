@@ -1,5 +1,7 @@
 package com.kidchang.lingopress.press.entity;
 
+import com.kidchang.lingopress._base.constant.CategoryEnum;
+import com.kidchang.lingopress._base.constant.LanguageEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -27,17 +29,19 @@ public class Press {
     @Size(min = 0, max = 5, message = "유저 점수의 평균은 0~5사이 입니다.")
     private Float rating;
     private LocalDateTime publishedAt;
-    private String language;
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private CategoryEnum category;
     @Schema(description = "저자")
     private String author;
     @Schema(description = "출판사")
     private String publisher;
     @Schema(description = "공개여부")
     private String accessLevel;
+    @Enumerated(EnumType.STRING)
+    private LanguageEnum language;
 
     @Builder
-    public Press(Long id, String title, String translatedTitle, String content, String originalUrl, String imageUrl, Integer totalContentLine, Float rating, LocalDateTime publishedAt, String language, String category, String author, String publisher, String accessLevel) {
+    public Press(Long id, String title, String translatedTitle, String content, String originalUrl, String imageUrl, Integer totalContentLine, Float rating, LocalDateTime publishedAt, LanguageEnum language, CategoryEnum category, String author, String publisher, String accessLevel) {
         this.id = id;
         this.title = title;
         this.translatedTitle = translatedTitle;
