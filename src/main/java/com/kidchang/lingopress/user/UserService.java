@@ -10,6 +10,7 @@ import com.kidchang.lingopress.user.dto.request.GoogleRequest;
 import com.kidchang.lingopress.user.dto.request.UserLanguageDto;
 import com.kidchang.lingopress.user.dto.response.GoogleInfResponse;
 import com.kidchang.lingopress.user.dto.response.GoogleResponse;
+import com.kidchang.lingopress.user.dto.response.LoginResponse;
 import com.kidchang.lingopress.user.vo.GoogleUserInfoVO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -42,14 +43,25 @@ public class UserService {
     }
 
     @Transactional
-    public JwtResponse loginWithGoogle(String authCode, String googleClientId, String googleClientSecret, String googleRedirectUrl) {
+    public LoginResponse loginWithGoogle(String authCode, String googleClientId, String googleClientSecret, String googleRedirectUrl) {
         GoogleUserInfoVO info = getGoogleUserInfo(authCode, googleClientId, googleClientSecret, googleRedirectUrl);
         User user = findOrCreateUser(info);
         if (user.getStatus().equals(UserStatusEnum.INACTIVE)) {
             throw new BusinessException(Code.USER_IS_INACTIVE);
         }
 
-        return jwtService.issueJwt(user);
+        JwtResponse jwtResponse = jwtService.issueJwt(user);
+
+
+        return LoginResponse.builder()
+                .nickname(user.getNickname())
+                .accessTokenExpiresIn(jwtResponse.accessTokenExpiresIn())
+                .accessToken(jwtResponse.accessToken())
+                .refreshToken(jwtResponse.refreshToken())
+                .isNewUser(jwtResponse.isNewUser())
+                .userLanguage(user.getUserLanguage())
+                .targetLanguage(user.getTargetLanguage())
+                .build();
 
     }
 
@@ -140,8 +152,8 @@ public class UserService {
         Optional<User> userOptional = userRepository.findById(SecurityUtil.getUserId());
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            user.setUser_language(userLanguageDto.user_language());
-            user.setTarget_language(userLanguageDto.target_language());
+            user.setUserLanguage(userLanguageDto.user_language());
+            user.setTargetLanguage(userLanguageDto.target_language());
             userRepository.save(user);
             return true;
         } else {
