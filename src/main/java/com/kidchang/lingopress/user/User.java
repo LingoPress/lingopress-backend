@@ -1,5 +1,6 @@
 package com.kidchang.lingopress.user;
 
+import com.kidchang.lingopress._base.constant.LanguageEnum;
 import com.kidchang.lingopress._base.entity.BaseTimeEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -40,13 +41,21 @@ public class User extends BaseTimeEntity {
     private String providerId;
 
     @Enumerated(EnumType.STRING)
-
     @Schema(description = "유저 상태", example = "ACTIVE")
     @ColumnDefault("'ACTIVE'")
-    private UserStatusEnum status;
+    private UserStatusEnum status = UserStatusEnum.ACTIVE;
+
+    @Schema(description = "유저의 언어", example = "ko")
+    @Enumerated(EnumType.STRING)
+    private LanguageEnum userLanguage = LanguageEnum.KOREAN;
+
+    @Schema(description = "공부하길 원하는 언어", example = "en")
+    @Enumerated(EnumType.STRING)
+    private LanguageEnum targetLanguage = LanguageEnum.ENGLISH;
+
 
     @Builder
-    public User(String username, String nickname, String password, String role, String provider, String providerId, String email, UserStatusEnum status) {
+    public User(String username, String nickname, String password, String role, String provider, String providerId, String email) {
         this.username = username;
         this.nickname = nickname;
         this.password = password;
@@ -54,7 +63,6 @@ public class User extends BaseTimeEntity {
         this.provider = provider;
         this.providerId = providerId;
         this.email = email;
-        this.status = status;
     }
 
 }

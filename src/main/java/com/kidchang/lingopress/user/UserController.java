@@ -5,6 +5,8 @@ import com.kidchang.lingopress._base.exception.BusinessException;
 import com.kidchang.lingopress._base.response.DataResponseDto;
 import com.kidchang.lingopress.jwt.dto.request.JwtRequest;
 import com.kidchang.lingopress.jwt.dto.response.JwtResponse;
+import com.kidchang.lingopress.user.dto.request.UserLanguageDto;
+import com.kidchang.lingopress.user.dto.response.LoginResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,7 +52,7 @@ public class UserController {
 
     @Operation(summary = "구글 로그인/회원가입 (Oauth2)")
     @GetMapping("/oauth2/google")
-    public DataResponseDto<JwtResponse> loginGoogle(@RequestParam(value = "code") String authCode) {
+    public DataResponseDto<LoginResponse> loginGoogle(@RequestParam(value = "code") String authCode) {
 
         return DataResponseDto.of(userService.loginWithGoogle(authCode, googleClientId, googleClientSecret, googleRedirectUrl));
     }
@@ -59,6 +61,12 @@ public class UserController {
     @PatchMapping("/delete")
     public DataResponseDto<Boolean> deleteUser() {
         return DataResponseDto.of(userService.deleteUser());
+    }
+
+    @Operation(summary = "언어 정보 수정")
+    @PatchMapping("/language")
+    public DataResponseDto<Boolean> updateUserLanguage(@RequestBody UserLanguageDto userLanguageDto) {
+        return DataResponseDto.of(userService.updateUserLanguage(userLanguageDto));
     }
 
 

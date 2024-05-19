@@ -1,6 +1,8 @@
 package com.kidchang.lingopress.press.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.kidchang.lingopress._base.constant.CategoryEnum;
+import com.kidchang.lingopress._base.constant.LanguageEnum;
 import com.kidchang.lingopress.press.entity.Press;
 import lombok.Builder;
 
@@ -15,12 +17,13 @@ public record PressContentResponse(
         String author,
         String publisher,
         String imageUrl,
-        String language,
+        LanguageEnum language,
         String originalUrl,
         Integer totalContentLine,
         Float rating,
         String publishedAt,
-        List<PressContentLineResponse> content
+        List<PressContentLineResponse> content,
+        CategoryEnum category
 ) {
 
     public static PressContentResponse from(Press press,
@@ -38,6 +41,7 @@ public record PressContentResponse(
                 .publisher(press.getPublisher())
                 .language(press.getLanguage())
                 .translatedTitle(press.getTranslatedTitle())
+                .category(press.getCategory())
                 .build();
     }
 }
