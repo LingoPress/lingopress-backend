@@ -1,6 +1,7 @@
 package com.kidchang.lingopress.press.service;
 
 import com.kidchang.lingopress._base.constant.Code;
+import com.kidchang.lingopress._base.constant.LanguageEnum;
 import com.kidchang.lingopress._base.exception.BusinessException;
 import com.kidchang.lingopress._base.utils.SecurityUtil;
 import com.kidchang.lingopress.press.PressRepository;
@@ -34,6 +35,14 @@ public class PressService {
     private final LearnedPressContentLineRepository learnedPressContentLineRepository;
 
     public Slice<PressResponse> getPressList(Pageable pageable) {
+        // 유저 정보가 있다면 학습을 원하는 언어만 추출
+        Long userId = SecurityUtil.getUserId();
+        if (userId != null) {
+            User user = userRepository.findById(userId).get();
+            LanguageEnum targetLanguage = user.getTargetLanguage();
+            LanguageEnum userLanguage = user.getUserLanguage();
+            return pressRepository.findAllByLanguage(targetLanguage, userLanguage, pageable);
+        }
         Slice<Press> pressSlice = pressRepository.findAll(pageable);
         return pressSlice.map(PressResponse::from);
     }
