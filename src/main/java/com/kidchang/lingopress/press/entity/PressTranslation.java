@@ -1,7 +1,6 @@
 package com.kidchang.lingopress.press.entity;
 
 import com.kidchang.lingopress._base.constant.LanguageEnum;
-import com.kidchang.lingopress._base.utils.LanguageEnumConverter;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +13,6 @@ public class PressTranslation {
     @ManyToOne
     private Press press;
     private String translatedTitle;
-    @Convert(converter = LanguageEnumConverter.class)
+    @Enumerated(EnumType.STRING)
     private LanguageEnum translatedLanguage;
 }

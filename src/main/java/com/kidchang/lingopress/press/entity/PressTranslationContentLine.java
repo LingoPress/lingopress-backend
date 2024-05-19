@@ -1,7 +1,6 @@
 package com.kidchang.lingopress.press.entity;
 
 import com.kidchang.lingopress._base.constant.LanguageEnum;
-import com.kidchang.lingopress._base.utils.LanguageEnumConverter;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +15,7 @@ public class PressTranslationContentLine {
     private Integer lineNumber;
     @Column(columnDefinition = "TEXT")
     private String translatedLineContent;
-    @Convert(converter = LanguageEnumConverter.class)
+    @Enumerated(EnumType.STRING)
     private LanguageEnum translatedLanguage;
 
 
