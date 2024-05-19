@@ -34,17 +34,17 @@ public class PressService {
     private final LearnedPressRepository learnedPressRepository;
     private final LearnedPressContentLineRepository learnedPressContentLineRepository;
 
-    public Slice<PressResponse> getPressList(Pageable pageable) {
+    public Slice<PressResponse> getPressList(Pageable pageable, LanguageEnum acceptLanguage) {
         // 유저 정보가 있다면 학습을 원하는 언어만 추출
         Long userId = SecurityUtil.getUserId();
         if (userId != null) {
             User user = userRepository.findById(userId).get();
             LanguageEnum targetLanguage = user.getTargetLanguage();
             LanguageEnum userLanguage = user.getUserLanguage();
-            return pressRepository.findAllByLanguage(targetLanguage, userLanguage, pageable);
+            return pressRepository.findAllByTargetLanguageAndUserLanguage(targetLanguage, userLanguage, pageable);
         }
-        Slice<Press> pressSlice = pressRepository.findAll(pageable);
-        return pressSlice.map(PressResponse::from);
+        // Slice<Press> pressSlice = pressRepository.findAll(pageable);
+        return pressRepository.findAllByUserLanguage(acceptLanguage, pageable);
     }
 
     public Press getPressById(Long pressId) {

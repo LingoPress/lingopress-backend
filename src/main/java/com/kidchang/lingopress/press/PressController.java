@@ -1,5 +1,6 @@
 package com.kidchang.lingopress.press;
 
+import com.kidchang.lingopress._base.constant.LanguageEnum;
 import com.kidchang.lingopress._base.response.DataResponseDto;
 import com.kidchang.lingopress._base.response.SliceResponseDto;
 import com.kidchang.lingopress.press.dto.request.TextSimilarityAnalysisRequest;
@@ -10,6 +11,7 @@ import com.kidchang.lingopress.press.service.LearnPressService;
 import com.kidchang.lingopress.press.service.LearnedPressContentLineService;
 import com.kidchang.lingopress.press.service.PressService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -33,14 +35,19 @@ public class PressController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "6") int size,
             @RequestParam(defaultValue = "publishedAt") String sort,
-            @RequestParam(defaultValue = "desc") String order) {
+            @RequestParam(defaultValue = "desc") String order,
+            HttpServletRequest request) {
         Pageable pageable;
 
         if (order.equals("asc")) pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, size, Sort.by(sort).descending());
+        String acceptLanguage = request.getHeader("Accept-Language").split(",")[0].split(";")[0];
+
+        LanguageEnum primaryLanguage = LanguageEnum.valueOf(acceptLanguage.toLowerCase());
+        System.out.println("@@@ " + primaryLanguage);
 
         return DataResponseDto.of(
-                SliceResponseDto.from(pressService.getPressList(pageable)));
+                SliceResponseDto.from(pressService.getPressList(pageable, primaryLanguage)));
     }
 
     @Operation(summary = "프레스 상세 조회")
