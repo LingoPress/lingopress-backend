@@ -47,11 +47,11 @@ public class User extends BaseTimeEntity {
 
     @Schema(description = "유저의 언어", example = "ko")
     @Enumerated(EnumType.STRING)
-    private LanguageEnum user_language = LanguageEnum.KOREAN;
+    private LanguageEnum userLanguage = LanguageEnum.KOREAN;
 
     @Schema(description = "공부하길 원하는 언어", example = "en")
     @Enumerated(EnumType.STRING)
-    private LanguageEnum target_language = LanguageEnum.ENGLISH;
+    private LanguageEnum targetLanguage = LanguageEnum.ENGLISH;
 
 
     @Builder
