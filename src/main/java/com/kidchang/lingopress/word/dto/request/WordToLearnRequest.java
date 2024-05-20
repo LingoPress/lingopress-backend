@@ -12,7 +12,8 @@ public record WordToLearnRequest(
         String translatedText,
         Integer lineNumber,
         Long pressId,
-        LanguageEnum language
+        LanguageEnum targetLanguage,
+        LanguageEnum userLanguage
 ) {
 
 }

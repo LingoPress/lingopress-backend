@@ -1,6 +1,7 @@
 package com.kidchang.lingopress.word;
 
 import com.kidchang.lingopress._base.constant.LanguageEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,6 +29,7 @@ public class WordToLearn {
     // Boolean은 null이 가능하므로 boolean을 사용.
     @Column(columnDefinition = "boolean default false")
     private boolean isLearned;
+    @Schema(description = "사용자 언어")
     @Enumerated(EnumType.STRING)
     private LanguageEnum language;
 

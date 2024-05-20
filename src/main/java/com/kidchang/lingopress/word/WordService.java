@@ -44,6 +44,8 @@ public class WordService {
                         .original_text(request.originalText())
                         .translated_text(request.translatedText())
                         .word(request.word())
+                        .target_language(request.targetLanguage())
+                        .user_language(request.userLanguage())
                         .build());
 
         WordToLearn wordToLearn = WordToLearn.builder()
@@ -54,7 +56,7 @@ public class WordService {
                 // .press(press)
                 .pressId(request.pressId())
                 .lineNumber(request.lineNumber())
-                .language(request.language())
+                .language(request.userLanguage())
                 .translatedWord(translateTextResponse.getTranslatedText())
                 .build();
 
