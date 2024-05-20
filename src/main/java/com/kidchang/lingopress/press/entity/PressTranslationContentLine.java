@@ -3,10 +3,12 @@ package com.kidchang.lingopress.press.entity;
 import com.kidchang.lingopress._base.constant.LanguageEnum;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
+@Getter
 public class PressTranslationContentLine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
