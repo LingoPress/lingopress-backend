@@ -61,6 +61,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+    
+    implementation "com.deepl.api:deepl-java:1.5.0"
+
 }
 
 dependencyManagement {
