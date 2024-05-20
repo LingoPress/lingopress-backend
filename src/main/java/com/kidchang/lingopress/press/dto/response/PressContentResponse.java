@@ -40,8 +40,26 @@ public record PressContentResponse(
                 .author(press.getAuthor())
                 .publisher(press.getPublisher())
                 .language(press.getLanguage())
-                .translatedTitle(press.getTranslatedTitle())
                 .category(press.getCategory())
+                .build();
+    }
+
+    public static PressContentResponse from(PressResponse press,
+                                            List<PressContentLineResponse> pressContentLines) {
+        return PressContentResponse.builder()
+                .id(press.id())
+                .translatedTitle(press.translatedTitle())
+                .title(press.title())
+                .imageUrl(press.imageUrl())
+                .originalUrl(press.originalUrl())
+                .totalContentLine(press.totalContentLine())
+                .rating(press.rating())
+                .publishedAt(press.publishedAt().toString())
+                .content(pressContentLines)
+                .author(press.author())
+                .publisher(press.publisher())
+                .language(press.language())
+                .category(press.category())
                 .build();
     }
 }
