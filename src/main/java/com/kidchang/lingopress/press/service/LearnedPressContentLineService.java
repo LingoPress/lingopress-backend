@@ -69,7 +69,7 @@ public class LearnedPressContentLineService {
 
     private PressContentLine getPressContentLine(Long pressId, Integer contentLineNumber) {
         return pressContentLineRepository.findByPressIdAndLineNumber(pressId, contentLineNumber)
-                .orElseThrow(() -> new BusinessException(Code.PRESS_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(Code.PRESS_CONTENT_LINE_NOT_FOUND));
     }
 
     private LearnedPress getOrCreateLearnedPress(User user, Press press) {
