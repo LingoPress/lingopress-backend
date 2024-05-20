@@ -41,10 +41,23 @@ public class PressController {
 
         if (order.equals("asc")) pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, size, Sort.by(sort).descending());
-        String acceptLanguage = request.getHeader("Accept-Language").split(",")[0].split(";")[0];
 
-        LanguageEnum primaryLanguage = LanguageEnum.valueOf(acceptLanguage.toLowerCase());
-        System.out.println("@@@ " + primaryLanguage);
+        String acceptLanguage = request.getHeader("Accept-Language").toLowerCase();
+        String primaryLanguageCode = "en"; // Default language
+        if (!acceptLanguage.isEmpty()) {
+            String[] languages = acceptLanguage.split(",");
+            if (languages.length > 0) {
+                String primaryLanguage = languages[0].split(";")[0]; // Extract primary language
+                primaryLanguageCode = primaryLanguage.split("-")[0]; // Normalize to language code only (e.g., "ko-kr" to "ko")
+            }
+        }
+
+        LanguageEnum primaryLanguage;
+        try {
+            primaryLanguage = LanguageEnum.valueOf(primaryLanguageCode);
+        } catch (IllegalArgumentException e) {
+            primaryLanguage = LanguageEnum.en; // Default language
+        }
 
         return DataResponseDto.of(
                 SliceResponseDto.from(pressService.getPressList(pageable, primaryLanguage)));
