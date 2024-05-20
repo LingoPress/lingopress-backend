@@ -231,7 +231,52 @@ public class LearnedPressContentLineService {
 
         return TextSimilarityAnalysisResponse.builder()
                 .similarity(textSimilarityAnalysisResponse.similarity())
-                .similarityApiUsage(tracker.getSimilarityApiCount())
-                .build();
+                .similarityApiUsage(tracker.getSimilarityApiCount());
+
+
+        return responseBuilder.build();
+    }
+
+
+    /**
+     * 해당 프레스의 lineNumber에 해당하는 pressTranslationContentLine을 생성한다.
+     * 이 메서드를 호출하는 경우는 번역된 내용이 없는 경우이다!
+     *
+     * @param pressId
+     * @param lineNumber
+     */
+    public PressTranslationContentLine createPressTranslationContentLine(Long pressId, Integer lineNumber, User user, String originalLineContent) {
+
+        Press press = getPress(pressId);
+
+        PressTranslationContentLine pressTranslationContentLine;
+        //= getPressTranslationContentLine(pressId, lineNumber, user.getUserLanguage());
+
+        //if (pressTranslationContentLine == null) {
+        // deepl에 번역 요청
+        String text;
+        try {
+            TextResult deepLResponse = deepLClient.translate(originalLineContent, user.getTargetLanguage().toString().toUpperCase(), user.getUserLanguage().toString().toUpperCase());
+            text = deepLResponse.getText();
+            // 저장
+            pressTranslationContentLine = PressTranslationContentLine.builder()
+                    .press(press)
+                    .lineNumber(lineNumber)
+                    .translatedLineContent(text)
+                    .translatedLanguage(user.getUserLanguage())
+                    .build();
+            //}
+
+            return pressTranslationContentLineRepository.save(pressTranslationContentLine);
+        } catch (DeepLException | InterruptedException e) {
+            throw new BusinessException(Code.TRANSLATION_ERROR);
+        }
+
+
+    }
+
+    private PressTranslationContentLine getPressTranslationContentLine(Long pressId, Integer lineNumber, LanguageEnum userLanguage) {
+        return pressTranslationContentLineRepository.findByPressIdAndLineNumberAndTranslatedLanguage(pressId, lineNumber, userLanguage)
+                .orElse(null);
     }
 }
