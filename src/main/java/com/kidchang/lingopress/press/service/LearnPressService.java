@@ -30,6 +30,7 @@ public class LearnPressService {
         return learnedPress.orElseGet(() -> learnedPressRepository.save(LearnedPress.builder()
                 .user(user)
                 .press(press)
+                .userLanguage(user.getUserLanguage())
                 .build()));
 
     }

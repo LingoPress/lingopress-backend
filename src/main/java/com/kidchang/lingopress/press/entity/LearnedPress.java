@@ -1,5 +1,6 @@
 package com.kidchang.lingopress.press.entity;
 
+import com.kidchang.lingopress._base.constant.LanguageEnum;
 import com.kidchang.lingopress._base.entity.BaseTimeEntity;
 import com.kidchang.lingopress.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -31,14 +32,19 @@ public class LearnedPress extends BaseTimeEntity {
     @Schema(description = "번역한 라인 수. 올바른지 여부 X")
     private Integer translatedContentLine;
 
+    @Enumerated(EnumType.STRING)
+    @Schema(description = "이 뉴스를 학습할 때 쓴 유저의 언어")
+    private LanguageEnum userLanguage;
+
     @Builder
-    public LearnedPress(User user, Press press) {
+    public LearnedPress(User user, Press press, LanguageEnum userLanguage) {
         this.user = user;
         this.press = press;
         this.isLearned = false;
         this.comment = "";
         this.learnedContentLine = 0;
         this.translatedContentLine = 0;
+        this.userLanguage = userLanguage;
     }
 
     public void increaseLearnedContentLineCount() {
