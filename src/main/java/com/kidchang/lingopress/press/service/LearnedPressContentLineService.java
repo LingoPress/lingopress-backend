@@ -1,12 +1,16 @@
 package com.kidchang.lingopress.press.service;
 
+import com.deepl.api.DeepLException;
+import com.deepl.api.TextResult;
 import com.kidchang.lingopress._base.constant.Code;
+import com.kidchang.lingopress._base.constant.LanguageEnum;
 import com.kidchang.lingopress._base.exception.BusinessException;
 import com.kidchang.lingopress._base.utils.SecurityUtil;
 import com.kidchang.lingopress.apiUsage.ApiUsageEnum;
 import com.kidchang.lingopress.apiUsage.ApiUsageTracker;
 import com.kidchang.lingopress.apiUsage.ApiUsageTrackerService;
 import com.kidchang.lingopress.client.AITextSimilarityAnalysisClient;
+import com.kidchang.lingopress.client.DeepLClient;
 import com.kidchang.lingopress.learningRecord.LearningRecordService;
 import com.kidchang.lingopress.press.PressRepository;
 import com.kidchang.lingopress.press.dto.request.TextSimilarityAnalysisRequest;
@@ -14,14 +18,13 @@ import com.kidchang.lingopress.press.dto.request.TranslateContentLineMemoRequest
 import com.kidchang.lingopress.press.dto.request.TranslateContentLineRequest;
 import com.kidchang.lingopress.press.dto.response.PressContentLineResponse;
 import com.kidchang.lingopress.press.dto.response.TextSimilarityAnalysisResponse;
-import com.kidchang.lingopress.press.entity.LearnedPress;
-import com.kidchang.lingopress.press.entity.LearnedPressContentLine;
-import com.kidchang.lingopress.press.entity.Press;
-import com.kidchang.lingopress.press.entity.PressContentLine;
+import com.kidchang.lingopress.press.entity.*;
 import com.kidchang.lingopress.press.repository.LearnedPressContentLineRepository;
 import com.kidchang.lingopress.press.repository.PressContentLineRepository;
+import com.kidchang.lingopress.press.repository.PressTranslationContentLineRepository;
 import com.kidchang.lingopress.user.User;
 import com.kidchang.lingopress.user.UserRepository;
+import com.kidchang.lingopress.user.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,10 +49,14 @@ public class LearnedPressContentLineService {
     private final ApiUsageTrackerService apiUsageTrackerService;
 
     private final PressService pressService;
+    private final PressTranslationContentLineRepository pressTranslationContentLineRepository;
+    private final DeepLClient deepLClient;
+
+    private final UserService userService;
 
     @Transactional
     public PressContentLineResponse checkPressContentLine(TranslateContentLineRequest request) {
-        User user = getUser();
+        User user = userService.getUser();
         Press press = getPress(request.pressId());
         PressContentLine pressContentLine = getPressContentLine(press.getId(), request.contentLineNumber());
         LearnedPress learnedPress = getOrCreateLearnedPress(user, press);
@@ -58,10 +65,6 @@ public class LearnedPressContentLineService {
         return buildPressContentLineResponse(pressContentLine, learnedPressContentLine);
     }
 
-    private User getUser() {
-        return userRepository.findById(SecurityUtil.getUserId())
-                .orElseThrow(() -> new BusinessException(Code.NOT_FOUND_USER));
-    }
 
     private Press getPress(Long pressId) {
         return pressService.getPressById(pressId);
@@ -69,7 +72,7 @@ public class LearnedPressContentLineService {
 
     private PressContentLine getPressContentLine(Long pressId, Integer contentLineNumber) {
         return pressContentLineRepository.findByPressIdAndLineNumber(pressId, contentLineNumber)
-                .orElseThrow(() -> new BusinessException(Code.PRESS_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(Code.PRESS_CONTENT_LINE_NOT_FOUND));
     }
 
     private LearnedPress getOrCreateLearnedPress(User user, Press press) {
@@ -144,13 +147,12 @@ public class LearnedPressContentLineService {
                 .build();
     }
 
-
     @Transactional
     public PressContentLineResponse writePressContentLineMemo(TranslateContentLineMemoRequest request) {
         // TODO duplicate code 줄이기
         Long pressId = request.pressId();
         // 1. User 가져오기
-        User user = getUser();
+        User user = userService.getUser();
         // 2. Press 가져오기
         Press press = getPress(pressId);
 
@@ -223,14 +225,87 @@ public class LearnedPressContentLineService {
 
     public TextSimilarityAnalysisResponse checkPressContentLineSimilarity(TextSimilarityAnalysisRequest request) {
         Long userId = SecurityUtil.getUserId();
+        User user = userService.getUser();
+
+        TextSimilarityAnalysisResponse.TextSimilarityAnalysisResponseBuilder responseBuilder = TextSimilarityAnalysisResponse.builder();
+
+        TextSimilarityAnalysisRequest textSimilarityAnalysisRequest;
+
+        if (request.machineTranslatedText() == null) {
+            PressTranslationContentLine pressTranslationContentLine = createPressTranslationContentLine(request.press_id(), request.line_number(), user, request.originalText());
+            textSimilarityAnalysisRequest = TextSimilarityAnalysisRequest.builder()
+                    .userTranslatedText(request.userTranslatedText())
+                    .machineTranslatedText(pressTranslationContentLine.getTranslatedLineContent())
+                    .press_id(request.press_id())
+                    .line_number(request.line_number())
+                    .build();
+
+            responseBuilder.translatedLineText(pressTranslationContentLine.getTranslatedLineContent());
+
+        } else {
+            textSimilarityAnalysisRequest = TextSimilarityAnalysisRequest.builder()
+                    .userTranslatedText(request.userTranslatedText())
+                    .machineTranslatedText(request.machineTranslatedText())
+                    .press_id(request.press_id())
+                    .line_number(request.line_number())
+                    .build();
+        }
+
+        // 번역된 내용이 없으면 번역을 먼저 해야한다.
+
+        TextSimilarityAnalysisResponse textSimilarityAnalysisResponse = aiTextSimilarityAnalysisClient.checkPressContentLineSimilarity(textSimilarityAnalysisRequest);
+
 
         ApiUsageTracker tracker = apiUsageTrackerService.createOrUpdateApiUsageTracker(userId, ApiUsageEnum.SIMILARITY);
 
-        TextSimilarityAnalysisResponse textSimilarityAnalysisResponse = aiTextSimilarityAnalysisClient.checkPressContentLineSimilarity(request);
-
-        return TextSimilarityAnalysisResponse.builder()
+        responseBuilder
                 .similarity(textSimilarityAnalysisResponse.similarity())
-                .similarityApiUsage(tracker.getSimilarityApiCount())
-                .build();
+                .similarityApiUsage(tracker.getSimilarityApiCount());
+
+
+        return responseBuilder.build();
+    }
+
+
+    /**
+     * 해당 프레스의 lineNumber에 해당하는 pressTranslationContentLine을 생성한다.
+     * 이 메서드를 호출하는 경우는 번역된 내용이 없는 경우이다!
+     *
+     * @param pressId
+     * @param lineNumber
+     */
+    public PressTranslationContentLine createPressTranslationContentLine(Long pressId, Integer lineNumber, User user, String originalLineContent) {
+
+        Press press = getPress(pressId);
+
+        PressTranslationContentLine pressTranslationContentLine;
+        //= getPressTranslationContentLine(pressId, lineNumber, user.getUserLanguage());
+
+        //if (pressTranslationContentLine == null) {
+        // deepl에 번역 요청
+        String text;
+        try {
+            TextResult deepLResponse = deepLClient.translate(originalLineContent, user.getTargetLanguage().toString().toUpperCase(), user.getUserLanguage().toString().toUpperCase());
+            text = deepLResponse.getText();
+            // 저장
+            pressTranslationContentLine = PressTranslationContentLine.builder()
+                    .press(press)
+                    .lineNumber(lineNumber)
+                    .translatedLineContent(text)
+                    .translatedLanguage(user.getUserLanguage())
+                    .build();
+            //}
+
+            return pressTranslationContentLineRepository.save(pressTranslationContentLine);
+        } catch (DeepLException | InterruptedException e) {
+            throw new BusinessException(Code.TRANSLATION_ERROR);
+        }
+
+
+    }
+
+    private PressTranslationContentLine getPressTranslationContentLine(Long pressId, Integer lineNumber, LanguageEnum userLanguage) {
+        return pressTranslationContentLineRepository.findByPressIdAndLineNumberAndTranslatedLanguage(pressId, lineNumber, userLanguage)
+                .orElse(null);
     }
 }

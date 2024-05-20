@@ -6,6 +6,8 @@ import com.kidchang.lingopress._base.constant.LanguageEnum;
 import com.kidchang.lingopress.press.entity.Press;
 import lombok.Builder;
 
+import java.time.LocalDateTime;
+
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record PressResponse(
@@ -16,7 +18,7 @@ public record PressResponse(
         String originalUrl,
         Integer totalContentLine,
         Float rating,
-        String publishedAt,
+        LocalDateTime publishedAt,  // LocalDateTime 타입 유지
         String translatedTitle,
         String author,
         String publisher,
@@ -33,7 +35,7 @@ public record PressResponse(
                 .originalUrl(press.getOriginalUrl())
                 .totalContentLine(press.getTotalContentLine())
                 .rating(press.getRating())
-                .publishedAt(press.getPublishedAt().toString())
+                .publishedAt(press.getPublishedAt())
                 .translatedTitle(press.getTranslatedTitle())
                 .author(press.getAuthor())
                 .publisher(press.getPublisher())

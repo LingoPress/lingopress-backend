@@ -160,4 +160,9 @@ public class UserService {
             throw new BusinessException(Code.FAILED_TO_UPDATE_USER_LANGUAGE);
         }
     }
+
+    public User getUser() {
+        return userRepository.findById(SecurityUtil.getUserId())
+                .orElseThrow(() -> new BusinessException(Code.NOT_FOUND_USER));
+    }
 }
