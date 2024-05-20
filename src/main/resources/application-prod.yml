@@ -32,8 +32,8 @@ spring:
 jwt:
   secret: ${jwt-secret}
 
-#deepl:
-#  auth-key: ${deepl-key}
+deepl:
+  auth-key: ${deepl-key}
 
 chatgpt:
   auth-key: ${chatgpt-key}
