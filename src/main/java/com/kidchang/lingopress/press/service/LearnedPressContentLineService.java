@@ -46,10 +46,11 @@ public class LearnedPressContentLineService {
     private final ApiUsageTrackerService apiUsageTrackerService;
 
     private final PressService pressService;
+    private UserService userService;
 
     @Transactional
     public PressContentLineResponse checkPressContentLine(TranslateContentLineRequest request) {
-        User user = getUser();
+        User user = userService.getUser();
         Press press = getPress(request.pressId());
         PressContentLine pressContentLine = getPressContentLine(press.getId(), request.contentLineNumber());
         LearnedPress learnedPress = getOrCreateLearnedPress(user, press);
@@ -58,10 +59,6 @@ public class LearnedPressContentLineService {
         return buildPressContentLineResponse(pressContentLine, learnedPressContentLine);
     }
 
-    private User getUser() {
-        return userRepository.findById(SecurityUtil.getUserId())
-                .orElseThrow(() -> new BusinessException(Code.NOT_FOUND_USER));
-    }
 
     private Press getPress(Long pressId) {
         return pressService.getPressById(pressId);
@@ -150,7 +147,7 @@ public class LearnedPressContentLineService {
         // TODO duplicate code 줄이기
         Long pressId = request.pressId();
         // 1. User 가져오기
-        User user = getUser();
+        User user = userService.getUser();
         // 2. Press 가져오기
         Press press = getPress(pressId);
 
@@ -223,6 +220,10 @@ public class LearnedPressContentLineService {
 
     public TextSimilarityAnalysisResponse checkPressContentLineSimilarity(TextSimilarityAnalysisRequest request) {
         Long userId = SecurityUtil.getUserId();
+        User user = userService.getUser();
+
+        // 번역된 내용이 없으면 번역을 먼저 해야한다.
+        createPressTranslationContentLine(request.press_id(), request.line_number(), user, request.original_text());
 
         ApiUsageTracker tracker = apiUsageTrackerService.createOrUpdateApiUsageTracker(userId, ApiUsageEnum.SIMILARITY);
 
