@@ -3,6 +3,7 @@ package com.kidchang.lingopress.press;
 import com.kidchang.lingopress._base.constant.LanguageEnum;
 import com.kidchang.lingopress._base.response.DataResponseDto;
 import com.kidchang.lingopress._base.response.SliceResponseDto;
+import com.kidchang.lingopress.client.LambdaWarmUpClient;
 import com.kidchang.lingopress.press.dto.request.TextSimilarityAnalysisRequest;
 import com.kidchang.lingopress.press.dto.request.TranslateContentLineMemoRequest;
 import com.kidchang.lingopress.press.dto.request.TranslateContentLineRequest;
@@ -27,6 +28,7 @@ public class PressController {
     private final PressService pressService;
     private final LearnPressService learnPressService;
     private final LearnedPressContentLineService learnedPressContentLineService;
+    private final LambdaWarmUpClient lambdaWarmUpClient;
 
 
     @Operation(summary = "프레스 전체 리스트 조회")
@@ -42,10 +44,11 @@ public class PressController {
         if (order.equals("asc")) pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, size, Sort.by(sort).descending());
 
-        String acceptLanguage = request.getHeader("Accept-Language").toLowerCase();
+        String acceptLanguage = request.getHeader("Accept-Language");
         String primaryLanguageCode = "en"; // Default language
-        if (!acceptLanguage.isEmpty()) {
-            String[] languages = acceptLanguage.split(",");
+
+        if (acceptLanguage != null && !acceptLanguage.isEmpty()) {
+            String[] languages = acceptLanguage.toLowerCase().split(",");
             if (languages.length > 0) {
                 String primaryLanguage = languages[0].split(";")[0]; // Extract primary language
                 primaryLanguageCode = primaryLanguage.split("-")[0]; // Normalize to language code only (e.g., "ko-kr" to "ko")
@@ -58,6 +61,7 @@ public class PressController {
         } catch (IllegalArgumentException e) {
             primaryLanguage = LanguageEnum.en; // Default language
         }
+
 
         return DataResponseDto.of(
                 SliceResponseDto.from(pressService.getPressList(pageable, primaryLanguage)));
@@ -114,6 +118,13 @@ public class PressController {
 
         return DataResponseDto.of(
                 SliceResponseDto.from(learnPressService.getLearnedPressList(pageable)));
+    }
+
+    @Operation(summary = "람다 워밍업")
+    @GetMapping("/warming-up")
+    public DataResponseDto<String> warmUp() {
+        lambdaWarmUpClient.warmUp();
+        return DataResponseDto.of("Warming up");
     }
 
 }
