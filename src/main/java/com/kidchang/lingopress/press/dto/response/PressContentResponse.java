@@ -54,7 +54,7 @@ public record PressContentResponse(
                 .originalUrl(press.originalUrl())
                 .totalContentLine(press.totalContentLine())
                 .rating(press.rating())
-                .publishedAt(press.publishedAt().toString())
+                .publishedAt(press.publishedAt() != null ? press.publishedAt().toString() : "")
                 .content(pressContentLines)
                 .author(press.author())
                 .publisher(press.publisher())
