@@ -1,5 +1,6 @@
 package com.kidchang.lingopress.press;
 
+import com.kidchang.lingopress._base.constant.CategoryEnum;
 import com.kidchang.lingopress._base.constant.LanguageEnum;
 import com.kidchang.lingopress._base.response.DataResponseDto;
 import com.kidchang.lingopress._base.response.SliceResponseDto;
@@ -38,6 +39,7 @@ public class PressController {
             @RequestParam(defaultValue = "6") int size,
             @RequestParam(defaultValue = "publishedAt") String sort,
             @RequestParam(defaultValue = "desc") String order,
+            @RequestParam(defaultValue = "NEWS") String category,
             HttpServletRequest request) {
         Pageable pageable;
 
@@ -62,9 +64,10 @@ public class PressController {
             primaryLanguage = LanguageEnum.en; // Default language
         }
 
+        CategoryEnum categoryEnum = CategoryEnum.valueOf(category.toUpperCase());
 
         return DataResponseDto.of(
-                SliceResponseDto.from(pressService.getPressList(pageable, primaryLanguage)));
+                SliceResponseDto.from(pressService.getPressList(pageable, primaryLanguage, categoryEnum)));
     }
 
     @Operation(summary = "프레스 상세 조회")
