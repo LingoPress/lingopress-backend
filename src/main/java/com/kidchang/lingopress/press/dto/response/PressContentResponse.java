@@ -35,7 +35,7 @@ public record PressContentResponse(
                 .originalUrl(press.getOriginalUrl())
                 .totalContentLine(press.getTotalContentLine())
                 .rating(press.getRating())
-                .publishedAt(press.getPublishedAt().toString())
+                .publishedAt(press.getPublishedAt() != null ? press.getPublishedAt().toString() : "")
                 .content(pressContentLines)
                 .author(press.getAuthor())
                 .publisher(press.getPublisher())
