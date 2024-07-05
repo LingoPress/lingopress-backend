@@ -4,5 +4,6 @@ public enum VideoProcessingEnum {
     PENDING,
     PROCESSING,
     COMPLETED,
-    FAILED
+    FAILED,
+    REQUESTED
 }

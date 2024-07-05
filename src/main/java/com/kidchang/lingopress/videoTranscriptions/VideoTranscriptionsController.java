@@ -1,6 +1,8 @@
 package com.kidchang.lingopress.videoTranscriptions;
 
+import com.kidchang.lingopress._base.response.DataResponseDto;
 import com.kidchang.lingopress.videoTranscriptions.dto.VideoTranscriptionsRequest;
+import com.kidchang.lingopress.videoTranscriptions.dto.VideoTranscriptionsResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,15 +19,11 @@ public class VideoTranscriptionsController {
 
     @Operation(summary = "비디오 자막 생성 요청")
     @PostMapping("")
-    public void requestVideoTranscription(
+    public DataResponseDto<VideoTranscriptionsResponse> requestVideoTranscription(
             @RequestBody VideoTranscriptionsRequest request
     ) {
         // 비디오 자막 생성 요청
-        videoTranscriptionsService.requestVideoTranscription(request.language(), request.videoUrl());
-
-
+        return DataResponseDto.of(videoTranscriptionsService.requestVideoTranscription(request.language(), request.videoUrl()));
     }
-
-
 }
 
