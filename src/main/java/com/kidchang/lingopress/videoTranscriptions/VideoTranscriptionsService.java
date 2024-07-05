@@ -1,6 +1,7 @@
 package com.kidchang.lingopress.videoTranscriptions;
 
 import com.kidchang.lingopress.videoTranscriptions.dto.VideoTranscriptionsResponse;
+import com.kidchang.lingopress.videoTranscriptions.messaging.MessageSender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class VideoTranscriptionsService {
     private final VideoTranscriptionsRepository videoTranscriptionsRepository;
+    private final MessageSender messageSender;
 
     public VideoTranscriptionsResponse requestVideoTranscription(String language, String videoUrl) {
         // 비디오 자막 생성 요청
@@ -17,6 +19,7 @@ public class VideoTranscriptionsService {
                 .build());
 
         // rabbitmq에 메시지 전송
+        messageSender.sendRequest(videoTranscriptions.getId() + "," + videoUrl);
 
         return VideoTranscriptionsResponse.builder()
                 .id(videoTranscriptions.getId())
