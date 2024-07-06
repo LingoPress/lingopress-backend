@@ -2,6 +2,7 @@ package com.kidchang.lingopress.press.entity;
 
 import com.kidchang.lingopress._base.constant.CategoryEnum;
 import com.kidchang.lingopress._base.constant.LanguageEnum;
+import com.kidchang.lingopress.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -39,9 +40,12 @@ public class Press {
     private String accessLevel;
     @Enumerated(EnumType.STRING)
     private LanguageEnum language;
+    @Schema(description = "private일 경우 소유자")
+    @ManyToOne
+    private User owner;
 
     @Builder
-    public Press(Long id, String title, String translatedTitle, String content, String originalUrl, String imageUrl, Integer totalContentLine, Float rating, LocalDateTime publishedAt, LanguageEnum language, CategoryEnum category, String author, String publisher, String accessLevel) {
+    public Press(Long id, String title, String translatedTitle, String content, String originalUrl, String imageUrl, Integer totalContentLine, Float rating, LocalDateTime publishedAt, LanguageEnum language, CategoryEnum category, String author, String publisher, String accessLevel, User owner) {
         this.id = id;
         this.title = title;
         this.translatedTitle = translatedTitle;
@@ -56,6 +60,7 @@ public class Press {
         this.author = author;
         this.publisher = publisher;
         this.accessLevel = accessLevel;
+        this.owner = owner;
     }
 
 
