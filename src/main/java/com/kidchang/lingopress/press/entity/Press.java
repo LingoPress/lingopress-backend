@@ -71,4 +71,7 @@ public class Press {
     }
 
 
+    public void addOwner(User user) {
+        this.owners.add(user);
+    }
 }
