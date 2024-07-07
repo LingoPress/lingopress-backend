@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -40,12 +41,18 @@ public class Press {
     private String accessLevel;
     @Enumerated(EnumType.STRING)
     private LanguageEnum language;
-    @Schema(description = "private일 경우 소유자")
-    @ManyToOne
-    private User owner;
+    @Schema(description = "소유자 목록")
+    @ManyToMany
+    @JoinTable(
+            name = "press_owners",
+            joinColumns = @JoinColumn(name = "press_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> owners;
+
 
     @Builder
-    public Press(Long id, String title, String translatedTitle, String content, String originalUrl, String imageUrl, Integer totalContentLine, Float rating, LocalDateTime publishedAt, LanguageEnum language, CategoryEnum category, String author, String publisher, String accessLevel, User owner) {
+    public Press(Long id, String title, String translatedTitle, String content, String originalUrl, String imageUrl, Integer totalContentLine, Float rating, LocalDateTime publishedAt, LanguageEnum language, CategoryEnum category, String author, String publisher, String accessLevel, Set<User> owners) {
         this.id = id;
         this.title = title;
         this.translatedTitle = translatedTitle;
@@ -60,7 +67,7 @@ public class Press {
         this.author = author;
         this.publisher = publisher;
         this.accessLevel = accessLevel;
-        this.owner = owner;
+        this.owners = owners;
     }
 
 
