@@ -55,6 +55,12 @@ public enum Code {
     SIMILARITY_LIMIT_EXCEEDED(HttpStatus.TOO_MANY_REQUESTS, "유사도 검사 횟수 하루 사용량을 초과하였습니다."),
     PRESS_CONTENT_LINE_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 뉴스 문장을 찾을 수 없습니다."),
 
+    // email
+    MESSAGING_EXCEPTION(HttpStatus.BAD_REQUEST, "메일 전송에 실패하였습니다."),
+
+    // rabbitmq
+    RABBITMQ_MESSAGE_RECEIVE_ERROR(HttpStatus.BAD_REQUEST, "rabbitmq 메시지 수신에 실패하였습니다."),
+
     // Translate: Global
     TRANSLATION_ERROR(HttpStatus.BAD_REQUEST, "번역 에러가 발생하였습니다."),
     TRANSLATION_TEXT_TOO_LONG(HttpStatus.BAD_REQUEST, "번역할 텍스트가 너무 깁니다. 정상적인 문장이라면 제보해주세요."),
