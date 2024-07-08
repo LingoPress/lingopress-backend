@@ -45,8 +45,7 @@ public class SecurityConfig {
                                         "/v1/users/status",
                                         "/v1/press/**",
                                         "/actuator/**",
-                                        "/v1/users/error-occur",
-                                        "/v1/press/warming-up"
+                                        "/v1/users/error-occur"
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 )
