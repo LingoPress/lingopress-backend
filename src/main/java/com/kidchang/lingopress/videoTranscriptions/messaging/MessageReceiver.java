@@ -2,6 +2,8 @@ package com.kidchang.lingopress.videoTranscriptions.messaging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kidchang.lingopress._base.config.RabbitMQConfig;
+import com.kidchang.lingopress._base.constant.Code;
+import com.kidchang.lingopress._base.exception.BusinessException;
 import com.kidchang.lingopress.videoTranscriptions.VideoTranscriptionsService;
 import com.kidchang.lingopress.videoTranscriptions.messaging.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
@@ -31,10 +33,12 @@ public class MessageReceiver {
             log.info("ID: {}", messageResponse.queueId());
             log.info("Press ID: {}", messageResponse.pressId());
 
-            videoTranscriptionsService.responseVideoTranscription(messageResponse.queueId(), messageResponse.pressId());
+            if (!videoTranscriptionsService.responseVideoTranscription(messageResponse.queueId(), messageResponse.pressId())) {
+                log.error("메일 전송에 실패함: {}", message);
+            }
 
         } catch (Exception e) {
-            log.error("Error processing message: {}", message, e);
+            throw new BusinessException(Code.RABBITMQ_MESSAGE_RECEIVE_ERROR, e);
         }
     }
 }
