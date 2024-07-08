@@ -29,6 +29,28 @@ spring:
     url: jdbc:postgresql://lingopress-db:5432/lingopress
     hikari:
       max-lifetime: 25800 # Possibly consider using a shorter maxLifetime value. 오류로 인해 추가
+
+  rabbitmq:
+    host: ${ai-url}
+    port: 5672
+    username: ${rabbitmq-username}
+    password: ${rabbitmq-password}
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: dev.lingopress@gmail.com
+    password: ${gmail-password}
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: true
+            required: true
+        debug: false
+
+
 jwt:
   secret: ${jwt-secret}
 

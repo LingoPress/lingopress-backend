@@ -16,6 +16,7 @@ public class VideoTranscriptions extends BaseTimeEntity {
     private Long id;
     private String language;
     private String videoUrl;
+    @Enumerated(EnumType.STRING)
     private VideoProcessingEnum processingStatus;
     // 요청자
     @ManyToOne
@@ -27,5 +28,9 @@ public class VideoTranscriptions extends BaseTimeEntity {
         this.videoUrl = videoUrl;
         this.processingStatus = VideoProcessingEnum.REQUESTED;
         this.user = user;
+    }
+
+    public void updateProcessingStatus(VideoProcessingEnum videoProcessingEnum) {
+        this.processingStatus = videoProcessingEnum;
     }
 }
