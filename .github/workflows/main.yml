@@ -76,8 +76,11 @@ jobs:
                     --JWT_SECRET=${{ secrets.JWT_SECRET }} \
                     --SENTRY_DSN=${{ secrets.SENTRY_DSN }} \
                     --GOOGLE_SECRET=${{ secrets.GOOGLE_SECRET }} \
-                    --AI_URL=${{ secrets.LAMBDA_AI_URL }} \
-                    --DEEPL_KEY=${{ secrets.DEEPL_KEY }}
+                    --AI_URL=${{ secrets.A1_SERVER }} \
+                    --DEEPL_KEY=${{ secrets.DEEPL_KEY }} \
+                    --RABBITMQ_USERNAME=${{ secrets.RABBITMQ_USERNAME }} \
+                    --RABBITMQ_PASSWORD=${{ secrets.RABBITMQ_PASSWORD }} \
+                    --GMAIL_PASSWORD=${{ secrets.GMAIL_PASSWORD }}
             sudo docker image prune -f
 
       - name: Discord Webhook Action
