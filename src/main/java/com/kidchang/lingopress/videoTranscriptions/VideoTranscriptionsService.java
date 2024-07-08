@@ -63,7 +63,7 @@ public class VideoTranscriptionsService {
         videoTranscriptions.get().updateProcessingStatus(VideoProcessingEnum.COMPLETED);
         // 메일 보내기
         // 아래 링크를 클릭하여 접속하세요.\n https://lingopress.me/press/${pressId}
-        String messageContent = "아래 링크를 클릭하여 접속하세요.\n https://lingopress.me/press/" + pressId;
+        String messageContent = "아래 링크를 클릭하여 접속하세요.\n https://lingopress.me/lingopress/" + pressId;
         EmailMessage emailMessage = EmailMessage.builder()
                 .to(user.getEmail())
                 .subject("요청하신 비디오 자막 생성이 완료되었습니다.")
