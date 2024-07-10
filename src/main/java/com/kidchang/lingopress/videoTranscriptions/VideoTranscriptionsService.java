@@ -2,6 +2,8 @@ package com.kidchang.lingopress.videoTranscriptions;
 
 import com.kidchang.lingopress._base.constant.Code;
 import com.kidchang.lingopress._base.exception.BusinessException;
+import com.kidchang.lingopress.apiUsage.ApiUsageEnum;
+import com.kidchang.lingopress.apiUsage.ApiUsageTrackerService;
 import com.kidchang.lingopress.mail.EmailMessage;
 import com.kidchang.lingopress.mail.MailService;
 import com.kidchang.lingopress.press.PressRepository;
@@ -25,10 +27,17 @@ public class VideoTranscriptionsService {
     private final PressRepository pressRepository;
     private final UserService userService;
     private final MailService mailService;
+    private final ApiUsageTrackerService apiUsageTrackerService;
 
     public VideoTranscriptionsResponse requestVideoTranscription(String language, String videoUrl) {
-        // 비디오 자막 생성 요청
+
         User user = userService.getUser();
+        apiUsageTrackerService.createOrUpdateApiUsageTracker(user.getId(), ApiUsageEnum.TRANSLATION);
+
+        if (language == null) {
+            language = user.getTargetLanguage().toString();
+        }
+
         VideoTranscriptions videoTranscriptions = videoTranscriptionsRepository.save(VideoTranscriptions.builder()
                 .language(language)
                 .videoUrl(videoUrl)
@@ -63,7 +72,7 @@ public class VideoTranscriptionsService {
         videoTranscriptions.get().updateProcessingStatus(VideoProcessingEnum.COMPLETED);
         // 메일 보내기
         // 아래 링크를 클릭하여 접속하세요.\n https://lingopress.me/press/${pressId}
-        String messageContent = "아래 링크를 클릭하여 접속하세요.\n https://lingopress.me/press/" + pressId;
+        String messageContent = "아래 링크를 클릭하여 접속하세요.\n https://lingopress.me/lingopress/" + pressId;
         EmailMessage emailMessage = EmailMessage.builder()
                 .to(user.getEmail())
                 .subject("요청하신 비디오 자막 생성이 완료되었습니다.")

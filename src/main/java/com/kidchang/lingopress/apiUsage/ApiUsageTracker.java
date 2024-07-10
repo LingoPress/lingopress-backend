@@ -29,6 +29,9 @@ public class ApiUsageTracker {
     @Column(nullable = false, columnDefinition = "int default 0")
     private int similarityApiCount;
 
+    @Column(nullable = false, columnDefinition = "int default 0")
+    private int videoTranscriptionApiCount;
+
     @Builder
     public ApiUsageTracker(Long userId, LocalDate requestDate, int requestCount) {
         this.userId = userId;

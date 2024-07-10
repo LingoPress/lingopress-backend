@@ -4,7 +4,6 @@ import com.kidchang.lingopress._base.constant.CategoryEnum;
 import com.kidchang.lingopress._base.constant.LanguageEnum;
 import com.kidchang.lingopress._base.response.DataResponseDto;
 import com.kidchang.lingopress._base.response.SliceResponseDto;
-import com.kidchang.lingopress.client.LambdaWarmUpClient;
 import com.kidchang.lingopress.press.dto.request.TextSimilarityAnalysisRequest;
 import com.kidchang.lingopress.press.dto.request.TranslateContentLineMemoRequest;
 import com.kidchang.lingopress.press.dto.request.TranslateContentLineRequest;
@@ -29,7 +28,6 @@ public class PressController {
     private final PressService pressService;
     private final LearnPressService learnPressService;
     private final LearnedPressContentLineService learnedPressContentLineService;
-    private final LambdaWarmUpClient lambdaWarmUpClient;
 
 
     @Operation(summary = "프레스 전체 리스트 조회")
@@ -122,12 +120,4 @@ public class PressController {
         return DataResponseDto.of(
                 SliceResponseDto.from(learnPressService.getLearnedPressList(pageable)));
     }
-
-    @Operation(summary = "람다 워밍업")
-    @GetMapping("/warming-up")
-    public DataResponseDto<String> warmUp() {
-        lambdaWarmUpClient.warmUp();
-        return DataResponseDto.of("Warming up");
-    }
-
 }
