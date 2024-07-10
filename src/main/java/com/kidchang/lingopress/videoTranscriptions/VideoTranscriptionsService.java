@@ -29,6 +29,10 @@ public class VideoTranscriptionsService {
     public VideoTranscriptionsResponse requestVideoTranscription(String language, String videoUrl) {
         // 비디오 자막 생성 요청
         User user = userService.getUser();
+        if (language == null) {
+            language = user.getTargetLanguage().toString();
+        }
+
         VideoTranscriptions videoTranscriptions = videoTranscriptionsRepository.save(VideoTranscriptions.builder()
                 .language(language)
                 .videoUrl(videoUrl)
