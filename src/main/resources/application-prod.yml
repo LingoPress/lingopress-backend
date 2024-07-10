@@ -62,7 +62,7 @@ chatgpt:
 
 
 lingo-ai:
-  url: ${ai-url}
+  url: ${ai-url}:8000
 
 
 greeting:
