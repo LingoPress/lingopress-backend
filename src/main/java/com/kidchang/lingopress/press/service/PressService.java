@@ -38,6 +38,11 @@ public class PressService {
     public Slice<PressResponse> getPressList(Pageable pageable, LanguageEnum acceptLanguage, CategoryEnum category) {
         // 유저 정보가 있다면 학습을 원하는 언어만 추출
         Long userId = SecurityUtil.getUserId();
+        if (userId != null && category == CategoryEnum.YOUTUBE) {
+            User user = userRepository.findById(userId).get();
+            LanguageEnum userLanguage = user.getUserLanguage();
+            return pressRepository.findAllByTargetLanguageAndUserLanguageAndUserId(userLanguage, pageable, category, userId);
+        }
         if (userId != null) {
             User user = userRepository.findById(userId).get();
             LanguageEnum targetLanguage = user.getTargetLanguage();

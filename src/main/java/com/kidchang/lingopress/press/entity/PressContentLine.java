@@ -21,10 +21,10 @@ public class PressContentLine {
     private String lineText;
     @Column(columnDefinition = "TEXT")
     private String translatedLineText;
-    @Column(name = "start_ms")
-    private Integer startMS;
-    @Column(name = "end_ms")
-    private Integer endMS;
+    @Column(name = "start_sec")
+    private Integer startSecond;
+    @Column(name = "end_sec")
+    private Integer endSecond;
 
     @Builder
     public PressContentLine(Long id, Press press, Integer lineNumber, String lineText, String translatedLineText) {

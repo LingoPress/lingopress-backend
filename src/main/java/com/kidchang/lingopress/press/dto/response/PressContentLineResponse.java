@@ -14,7 +14,9 @@ public record PressContentLineResponse(
         String originalLineText,
         Boolean isCorrect,
         String memo,
-        Long pressId
+        Long pressId,
+        Integer startSecond,
+        Integer endSecond
 ) {
 
     public static PressContentLineResponse from(PressContentLine pressContentLine) {
