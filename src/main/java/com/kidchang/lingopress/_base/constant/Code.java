@@ -58,6 +58,9 @@ public enum Code {
     // email
     MESSAGING_EXCEPTION(HttpStatus.BAD_REQUEST, "메일 전송에 실패하였습니다."),
 
+    // video
+    VIDEO_TRANSCRIPTION_LIMIT_EXCEEDED(HttpStatus.TOO_MANY_REQUESTS, "동영상 자막 추출 횟수 하루 사용량을 초과하였습니다."),
+
     // rabbitmq
     RABBITMQ_MESSAGE_RECEIVE_ERROR(HttpStatus.BAD_REQUEST, "rabbitmq 메시지 수신에 실패하였습니다."),
 
