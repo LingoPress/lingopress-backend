@@ -16,19 +16,12 @@ public class ApiUsageTrackerService {
     @Transactional
     public ApiUsageTracker createOrUpdateApiUsageTracker(Long userId, ApiUsageEnum apiUsageEnum) {
         ApiUsageTracker tracker = apiUsageTrackerRepository.findByUserIdAndRequestDate(userId, LocalDate.now());
+        int limit = switch (apiUsageEnum) {
+            case SIMILARITY, TRANSLATION -> 50;
+            case VIDEO_TRANSCRIPTION -> 5;
+        };
 
-        tracker = getApiUsageTracker(userId, tracker);
-
-        switch (apiUsageEnum) {
-            case SIMILARITY:
-                tracker = updateSimilarityApiCount(tracker);
-                break;
-            case TRANSLATION:
-                tracker = updateTranslationApiCount(tracker);
-                break;
-        }
-
-        return tracker;
+        return updateApiCount(getApiUsageTracker(userId, tracker), apiUsageEnum, limit);
     }
 
     private ApiUsageTracker getApiUsageTracker(Long userId, ApiUsageTracker tracker) {
@@ -42,22 +35,27 @@ public class ApiUsageTrackerService {
         return tracker;
     }
 
-    private ApiUsageTracker updateTranslationApiCount(ApiUsageTracker tracker) {
-        // 2. 번역 횟수가 20회가 넘으면 예외 발생시키기
-        if (tracker.getRequestCount() >= 50) {
-            throw new BusinessException(Code.TRANSLATION_LIMIT_EXCEEDED);
+    private ApiUsageTracker updateApiCount(ApiUsageTracker tracker, ApiUsageEnum apiUsageEnum, int limit) {
+        int apiCount = switch (apiUsageEnum) {
+            case SIMILARITY -> tracker.getSimilarityApiCount();
+            case TRANSLATION -> tracker.getRequestCount();
+            case VIDEO_TRANSCRIPTION -> tracker.getVideoTranscriptionApiCount();
+        };
+        if (apiCount >= limit) {
+            throw new BusinessException(
+                    switch (apiUsageEnum) {
+                        case SIMILARITY -> Code.SIMILARITY_LIMIT_EXCEEDED;
+                        case TRANSLATION -> Code.TRANSLATION_LIMIT_EXCEEDED;
+                        case VIDEO_TRANSCRIPTION -> Code.VIDEO_TRANSCRIPTION_LIMIT_EXCEEDED;
+                    }
+            );
         }
-        // 4. 번역 횟수 증가시키기
-        tracker.setRequestCount(tracker.getRequestCount() + 1);
-        return tracker;
-    }
-
-    private ApiUsageTracker updateSimilarityApiCount(ApiUsageTracker tracker) {
-        int similarityApiCount = tracker.getSimilarityApiCount();
-        if (similarityApiCount >= 50) {
-            throw new BusinessException(Code.SIMILARITY_LIMIT_EXCEEDED);
+        // 번역 횟수 증가시키기
+        switch (apiUsageEnum) {
+            case SIMILARITY -> tracker.setSimilarityApiCount(apiCount + 1);
+            case TRANSLATION -> tracker.setRequestCount(apiCount + 1);
+            case VIDEO_TRANSCRIPTION -> tracker.setVideoTranscriptionApiCount(apiCount + 1);
         }
-        tracker.setSimilarityApiCount(similarityApiCount + 1);
         return tracker;
     }
 
