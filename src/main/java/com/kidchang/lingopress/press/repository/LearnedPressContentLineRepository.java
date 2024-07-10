@@ -38,7 +38,7 @@ public interface LearnedPressContentLineRepository extends
 
     // gpt 수정 수정본
     @Query(
-            "SELECT new com.kidchang.lingopress.press.dto.response.PressContentLineResponse(pcl.id, pcl.lineNumber, lpcl.userTranslatedLine, ptcl.translatedLineContent, pcl.lineText, lpcl.isCorrect, lpcl.memo, pcl.press.id) "
+            "SELECT new com.kidchang.lingopress.press.dto.response.PressContentLineResponse(pcl.id, pcl.lineNumber, lpcl.userTranslatedLine, ptcl.translatedLineContent, pcl.lineText, lpcl.isCorrect, lpcl.memo, pcl.press.id, pcl.startSecond, pcl.endSecond) "
                     + "FROM PressContentLine AS pcl "
                     + "LEFT OUTER JOIN LearnedPressContentLine AS lpcl ON lpcl.lineNumber = pcl.lineNumber AND lpcl.user.id = :userId AND lpcl.press.id = :pressId "
                     + "LEFT OUTER JOIN PressTranslationContentLine AS ptcl ON ptcl.lineNumber = pcl.lineNumber AND ptcl.press.id = pcl.press.id AND ptcl.translatedLanguage = :userLanguage "
