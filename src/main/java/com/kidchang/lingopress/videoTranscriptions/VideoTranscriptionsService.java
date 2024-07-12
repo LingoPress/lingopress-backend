@@ -29,6 +29,8 @@ public class VideoTranscriptionsService {
     private final MailService mailService;
     private final ApiUsageTrackerService apiUsageTrackerService;
 
+    private final int LIMIT_VIDEO_DURATION = 20; // 20분
+
     public VideoTranscriptionsResponse requestVideoTranscription(String language, String videoUrl) {
 
         User user = userService.getUser();
@@ -58,10 +60,26 @@ public class VideoTranscriptionsService {
     }
 
     @Transactional
-    public boolean responseVideoTranscription(Long queueId, Long pressId) {
+    public boolean responseVideoTranscription(Long queueId, Long pressId, boolean isSuccess) {
         // 비디오 자막 생성 완료 응답 처리
         Optional<VideoTranscriptions> videoTranscriptions = videoTranscriptionsRepository.findById(queueId);
         User user = videoTranscriptions.get().getUser();
+
+        if (!isSuccess) {
+            videoTranscriptions.get().updateProcessingStatus(VideoProcessingEnum.FAILED);
+            // 메일 보내기
+            String messageContent = "비디오 자막 생성에 실패했습니다. 영상 길이가 " + LIMIT_VIDEO_DURATION + "분을 넘었거나, 다른 이유로 인해 자막 생성에 실패했습니다. 계속해서 문제가 발생하면 관리자에게 문의하세요.";
+            EmailMessage emailMessage = EmailMessage.builder()
+                    .to(user.getEmail())
+                    .subject("비디오 자막 생성에 실패했습니다.")
+                    .message(messageContent)
+                    .build();
+
+            if (!mailService.sendMail(emailMessage)) {
+                throw new BusinessException(Code.MESSAGING_EXCEPTION);
+            }
+            return true;
+        }
 
         // pressId 로 press 조회 후 owner에 user 추가
         Press press = pressRepository.findById(pressId)
