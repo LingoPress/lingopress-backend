@@ -20,7 +20,7 @@ public interface PressRepository extends JpaRepository<Press, Long> {
 
     @Query(
             "SELECT new com.kidchang.lingopress.press.dto.response.PressResponse(p.id, p.title, p.content, p.imageUrl, p.originalUrl, p.totalContentLine, p.rating, p.publishedAt, pt.translatedTitle, p.author, p.publisher, pt.translatedLanguage, p.category) "
-                    + " FROM Press AS p LEFT OUTER JOIN PressTranslation AS pt ON p.id = pt.press.id WHERE p.category = :category AND pt.translatedLanguage = :userLanguage AND p.accessLevel = 'PUBLIC'")
+                    + " FROM Press AS p LEFT OUTER JOIN PressTranslation AS pt ON p.id = pt.press.id WHERE p.category = :category AND pt.translatedLanguage = :userLanguage AND p.accessLevel = 'public'")
     Slice<PressResponse> findAllByUserLanguage(LanguageEnum userLanguage, Pageable pageable, CategoryEnum category);
 
     @Query(
