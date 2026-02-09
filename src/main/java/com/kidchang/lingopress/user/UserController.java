@@ -5,6 +5,8 @@ import com.kidchang.lingopress._base.exception.BusinessException;
 import com.kidchang.lingopress._base.response.DataResponseDto;
 import com.kidchang.lingopress.jwt.dto.request.JwtRequest;
 import com.kidchang.lingopress.jwt.dto.response.JwtResponse;
+import com.kidchang.lingopress.user.dto.request.SigninRequest;
+import com.kidchang.lingopress.user.dto.request.SignupRequest;
 import com.kidchang.lingopress.user.dto.request.UserLanguageDto;
 import com.kidchang.lingopress.user.dto.response.LoginResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,6 +38,21 @@ public class UserController {
     public String errorOccur() {
         throw new BusinessException(Code.ERROR_OCCURRED_TEST);
     }
+
+
+    @Operation(summary = "회원가입")
+    @PostMapping("/sign-up")
+    public DataResponseDto<JwtResponse> createUser(@RequestBody SignupRequest signupRequest) {
+
+        return DataResponseDto.of(userService.createUser(signupRequest));
+    }
+
+    @Operation(summary = "로그인")
+    @PostMapping("/sign-in")
+    public DataResponseDto<JwtResponse> signIn(@RequestBody SigninRequest signinRequest) {
+        return DataResponseDto.of(userService.signIn(signinRequest));
+    }
+
 
     @Operation(summary = "토큰 재발급")
     @PostMapping("/reissue")
