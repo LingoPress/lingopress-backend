@@ -41,6 +41,8 @@ public class SecurityConfig {
                                 .permitAll()
                                 .requestMatchers(
                                         "/v1/users/oauth2/**",
+                                        "/v1/users/sign-in",
+                                        "/v1/users/sign-up",
                                         "/v1/users/reissue",
                                         "/v1/users/status",
                                         "/v1/press/**",
