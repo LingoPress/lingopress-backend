@@ -186,6 +186,10 @@ public class UserService {
     }
 
     public boolean updateUserLanguage(UserLanguageDto userLanguageDto) {
+        if (userLanguageDto.user_language() == null || userLanguageDto.target_language() == null) {
+            throw new BusinessException(Code.INVALID_INPUT_VALUE);
+        }
+
         Optional<User> userOptional = userRepository.findById(SecurityUtil.getUserId());
         if (userOptional.isPresent()) {
             User user = userOptional.get();
